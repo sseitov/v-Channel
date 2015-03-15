@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tF3-Rv-1TS">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+    </dependencies>
+    <scenes>
+        <!--Root View Controller-->
+        <scene sceneID="G2d-Ot-Hc1">
+            <objects>
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="EAK-lN-vvt" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="8Eq-2q-Hld">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="nmQ-M5-fRz">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nmQ-M5-fRz" id="lVU-RI-BGf">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="EAK-lN-vvt" id="pdn-ag-pTy"/>
+                            <outlet property="delegate" destination="EAK-lN-vvt" id="yXT-mg-LAz"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="xx9-FS-jTz"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sWz-bt-NN5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1166" y="-86"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="fWE-Ea-dFJ">
+            <objects>
+                <navigationController id="pgS-M8-AhM" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="yRR-nk-wel">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="EAK-lN-vvt" kind="relationship" relationship="rootViewController" id="Z9G-Hb-SVE"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7pl-eE-Lhl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="455" y="-86"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="jq1-hm-LsA">
+            <objects>
+                <navigationController id="f5D-1T-vTX" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="9to-Vc-NbP">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="mTv-Ql-Adn" kind="relationship" relationship="rootViewController" id="pgs-eh-fR4"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yYe-39-op4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="450" y="602"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="XJh-th-AjA">
+            <objects>
+                <splitViewController id="tF3-Rv-1TS" sceneMemberID="viewController">
+                    <connections>
+                        <segue destination="pgS-M8-AhM" kind="relationship" relationship="masterViewController" id="Lvr-q6-7hk"/>
+                        <segue destination="f5D-1T-vTX" kind="relationship" relationship="detailViewController" id="ZYJ-MJ-inA"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X5w-VC-YvS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-365" y="245"/>
+        </scene>
+        <!--Call Controller-->
+        <scene sceneID="WWk-30-4ch">
+            <objects>
+                <viewController id="mTv-Ql-Adn" customClass="CallController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gab-V0-giq"/>
+                        <viewControllerLayoutGuide type="bottom" id="rzR-Cy-4zg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="9Xd-Db-hf2">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RPi-ki-MG1" customClass="VideoLayerView">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4pM-KO-MZk" customClass="DragView">
+                                <rect key="frame" x="20" y="84" width="100" height="100"/>
+                                <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="vjn-6e-7FV">
+                        <barButtonItem key="leftBarButtonItem" title="End call" id="5PM-Gu-6ky">
+                            <connections>
+                                <action selector="endCall:" destination="mTv-Ql-Adn" id="gBt-1Q-g9C"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="switch-camera" id="kmL-Fa-Ez5">
+                            <connections>
+                                <action selector="switchCamera:" destination="mTv-Ql-Adn" id="hdG-ek-Ol2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="peerView" destination="RPi-ki-MG1" id="2ee-JL-Fp8"/>
+                        <outlet property="selfView" destination="4pM-KO-MZk" id="xfl-ti-nV1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xAA-3P-Tja" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1171" y="602"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="switch-camera" width="28" height="28"/>
+    </resources>
+</document>
