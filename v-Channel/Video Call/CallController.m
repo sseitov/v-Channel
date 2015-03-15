@@ -39,6 +39,7 @@
 {
     [super viewDidLoad];
     
+    [[Camera shared] startup];
     _captureQueue = dispatch_queue_create("com.vchannel.VideoCall", DISPATCH_QUEUE_SERIAL);
 
     _encoder = [[VTEncoder alloc] init];
@@ -56,6 +57,7 @@
 
 - (void)dealloc
 {
+    [[Camera shared] shutdown];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -78,7 +80,6 @@
 - (void)startCapture
 {
     if (!self.isCapture) {
-        [[Camera shared] startup];
         [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
         self.isCapture = YES;
     }
@@ -87,9 +88,8 @@
 - (void)stopCapture
 {
     if (self.isCapture) {
-        [[Camera shared] shutdown];
+        [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
         [_encoder close];
-        
         [_decoder close];
         [_selfView clear];
         [_peerView clear];
