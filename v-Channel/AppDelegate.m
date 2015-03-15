@@ -14,6 +14,10 @@
 
 @implementation AppDelegate
 
++ (BOOL)isPad
+{
+    return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -55,7 +59,7 @@
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController
 {
-    return NO;
+    return YES;
 }
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController

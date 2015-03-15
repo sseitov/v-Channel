@@ -1,0 +1,208 @@
+/*
+ * Pixate Freestyle v1.0.0 beta
+ *
+ * Copyright 2013 Pixate, Inc.
+ * Licensed under the MIT License
+ * http://opensource.org/licenses/MIT
+ *
+ */
+/* Containers */
+.container {
+  border: 1px solid #d8d9dc; }
+
+.horizontal-line {
+  background-color: #d8d9dc;
+  height: 1; }
+
+/* Navigation Bar */
+navigation-bar {
+  background-color: #207040;
+  opacity: 1;
+  color: white; }
+
+navigation-bar title {
+  color: white;
+  font-family: "HelveticaNeue";
+  font-size: 17pt;
+  font-weight: bold; }
+
+navigation-bar button-appearance {
+    color: white;
+    font-family: "HelveticaNeue";
+    font-size: 17pt;
+    font-weight: bold; }
+
+/* Tab Bar */
+tab-bar {
+  background-color: white; }
+
+tab-bar tab-bar-item {
+  color: #b0b1b4;
+  font-family: "Avenir";
+  font-size: 10pt; }
+
+tab-bar tab-bar-item:selected {
+  color: #0096d7; }
+
+/* Typography */
+/* Headings */
+.h1, .h2, .h3,
+.h4, .h5, .h6 {
+  font-family: "Avenir";
+  font-weight: bold; }
+
+.h1 {
+  font-size: 30pt;
+  height: 34; }
+
+.h2 {
+  font-size: 24pt;
+  height: 28; }
+
+.h3 {
+  font-size: 18pt;
+  height: 22; }
+
+.h4 {
+  font-size: 16pt;
+  height: 20; }
+
+.h5 {
+  font-size: 14pt; }
+
+.h6 {
+  font-size: 12pt;
+  height: 16; }
+
+/* Paragraph */
+.p {
+  font-family: "Avenir";
+  font-size: 14pt; }
+
+.p.small {
+  font-size: 12pt;
+  color: #53555a; }
+
+/* Alignment */
+.text-left {
+  text-align: left; }
+
+.text-center {
+  text-align: center; }
+
+.text-right {
+  text-align: right; }
+
+/*
+ * Collections
+ * --------------------------------
+ */
+collection-view {
+  background-color: #f7f7f7; }
+
+collection-view .icon {
+  background-color: #f7f7f7; }
+
+.collection-view-cell {
+  border: 0px solid #b0b1b4;
+  border-radius: 5pt;
+  box-shadow: 0px 1px 1px 0px #d8d9dc;
+  background-color: white; }
+
+/*
+ * Forms
+ * --------------------------------
+ */
+/* Text Field */
+text-field:normal {
+    border-radius: 5;
+    -ios-border-style: none;
+    background-color: #ffffff;
+    border-width: 1px;
+    border-color: #cccccc;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+text-field:highlighted {
+    background-color: #ffffff;
+    border-radius: 5;
+    -ios-border-style: none;
+    border-width: 1px;
+    border-color: rgba(0, 148, 217, 0.8);
+    box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 148, 217, 1.0);
+}
+
+
+text-field:normal {
+    transition: box-shadow 1s linear;
+}
+
+text-field:highlighted {
+    transition: box-shadow 1s linear;
+}
+
+/* Text views */
+.text-view {
+  color: #b0b1b4;
+  -ios-border-style: none;
+  background-color: #f7f7f7;
+  border: 1pt solid #f7f7f7;
+  font-family: "Avenir";
+  font-size: 14pt; }
+
+/* Segmented controls */
+.segmented-control {
+  background-color: #0096d7;
+  color: #0096d7;
+  font-family: "Avenir";
+  font-size: 14pt; }
+
+.segmented-control:selected {
+  color: white; }
+
+/* Switches */
+.switch {
+  color: #53555a;
+  -ios-tint-color: #53555a; }
+
+.switch thumb {
+  color: #0096d7; }
+
+/* Sliders */
+.slider thumb {
+  background-color: #0096d7;
+  border: 1px solid #53555a;
+  background-size: 28 28;
+  border-radius: 14px; }
+
+.slider min-track {
+  color: #0096d7; }
+
+.slider max-track {
+  color: #d8d9dc; }
+
+/*
+ * Tables
+ * --------------------------------
+ */
+.table-cell text-label {
+  color: #53555a;
+  font-family: "Avenir";
+  font-size: 14pt;
+  font-weight: light; }
+
+.table-cell {
+  background-color: white; }
+
+.table-cell:nth-child(odd) {
+  background-color: #f7f7f7; }
+
+/* Note: would prefer to use classes here, but since we're not using a custom section view, there's no easy way to set one */
+table-view-headerfooter-view {
+  background-color: #0070a3;
+  font-family: "Avenir"; }
+
+table-view-headerfooter-view text-label {
+  text-transform: uppercase;
+  color: white;
+  font-size: 12pt; }

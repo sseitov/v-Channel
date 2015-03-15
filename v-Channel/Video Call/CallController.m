@@ -22,13 +22,14 @@
 @property (weak, nonatomic) IBOutlet VideoLayerView *peerView;
 
 - (IBAction)switchCamera:(id)sender;
-- (IBAction)endCall:(id)sender;
+- (IBAction)endCall:(UIBarButtonItem*)sender;
 
 @property (strong, nonatomic) VTEncoder* encoder;
 @property (strong, nonatomic) VTDecoder* decoder;
 
 @property (nonatomic) UIDeviceOrientation orientation;
 @property (nonatomic) double aspectRatio;
+@property (nonatomic) BOOL isCapture;
 
 @end
 
@@ -51,8 +52,6 @@
                                              selector:@selector(deviceOrientationDidChange:)
                                                  name: UIDeviceOrientationDidChangeNotification
                                                object:nil];
-    
-    [[Camera shared] startup];
 }
 
 - (void)dealloc
@@ -71,23 +70,31 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     _orientation = [[UIDevice currentDevice] orientation];
-    [self startCapture];
+    if (![AppDelegate isPad]) {
+        [self endCall:self.navigationItem.leftBarButtonItem];
+    }
 }
 
 - (void)startCapture
 {
-    [[Camera shared] startup];
-    [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
+    if (!self.isCapture) {
+        [[Camera shared] startup];
+        [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
+        self.isCapture = YES;
+    }
 }
 
 - (void)stopCapture
 {
-    [[Camera shared] shutdown];
-    [_encoder close];
-    
-    [_decoder close];
-    [_selfView clear];
-    [_peerView clear];
+    if (self.isCapture) {
+        [[Camera shared] shutdown];
+        [_encoder close];
+        
+        [_decoder close];
+        [_selfView clear];
+        [_peerView clear];
+        self.isCapture = NO;
+    }
 }
 
 - (IBAction)switchCamera:(id)sender
@@ -97,10 +104,19 @@
     [self startCapture];
 }
 
-- (IBAction)endCall:(id)sender
+- (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    [self stopCapture];
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.isCapture) {
+        [self stopCapture];
+        if (![AppDelegate isPad]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            sender.image = [UIImage imageNamed:@"call"];
+        }
+    } else {
+        [self startCapture];
+        sender.image = [UIImage imageNamed:@"end-call"];
+    }
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -130,7 +146,14 @@
 - (void)encoder:(VTEncoder*)encoder encodedData:(NSData*)data
 {
     if (!_decoder.isOpened) {
-        CGSize sz = self.view.frame.size;
+        CGSize sz;
+        if (_aspectRatio <= 1.) {
+            sz.width = _peerView.frame.size.width;
+            sz.height = _peerView.frame.size.width * _aspectRatio;
+        } else {
+            sz.height = _peerView.frame.size.height;
+            sz.width = _peerView.frame.size.height / _aspectRatio;
+        }
         [_decoder openForWidth:sz.width height:sz.height sps:_encoder.sps pps:_encoder.pps];
     }
     if (_decoder.isOpened) {

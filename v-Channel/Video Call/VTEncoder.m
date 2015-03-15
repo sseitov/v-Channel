@@ -31,7 +31,7 @@ void CompressionDataCallbackHandler(void *outputCallbackRefCon,
 - (BOOL)openForWidth:(int)width height:(int)height
 {
     OSStatus status = VTCompressionSessionCreate(NULL, width, height, kCMVideoCodecType_H264,
-                                                 NULL,NULL,
+                                                 NULL, NULL,
                                                  NULL, CompressionDataCallbackHandler, (__bridge void*)self, &_session);
     if (status != noErr) {
         _session = NULL;
@@ -40,7 +40,8 @@ void CompressionDataCallbackHandler(void *outputCallbackRefCon,
     } else {
         VTSessionSetProperty(_session, kVTCompressionPropertyKey_AllowFrameReordering, kCFBooleanFalse);
         VTSessionSetProperty(_session, kVTCompressionPropertyKey_RealTime, kCFBooleanTrue);
-        VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_3_0);
+//        VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_3_0);
+        VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_High_AutoLevel);
         _numFrames = 0;
         self.isOpened = YES;
         return YES;

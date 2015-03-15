@@ -66,7 +66,7 @@ void DeompressionDataCallbackHandler(void *decompressionOutputRefCon,
                                           &outputCallback,
                                           &_session);
     if (status == noErr) {
-        VTSessionSetProperty(_session, kVTDecompressionPropertyKey_ThreadCount, (__bridge CFTypeRef)[NSNumber numberWithInt:4]);
+        VTSessionSetProperty(_session, kVTDecompressionPropertyKey_ThreadCount, (__bridge CFTypeRef)[NSNumber numberWithInt:1]);
         VTSessionSetProperty(_session, kVTDecompressionPropertyKey_RealTime, kCFBooleanTrue);
         _numFrames = 0;
         self.isOpened = YES;
