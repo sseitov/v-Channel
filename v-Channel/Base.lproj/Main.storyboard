@@ -5,7 +5,7 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Contacts-->
+        <!--v-Channel-->
         <scene sceneID="G2d-Ot-Hc1">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="EAK-lN-vvt" customClass="ContactsController" sceneMemberID="viewController">
@@ -29,7 +29,7 @@
                             <outlet property="delegate" destination="EAK-lN-vvt" id="yXT-mg-LAz"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Contacts" id="xx9-FS-jTz"/>
+                    <navigationItem key="navigationItem" title="v-Channel" id="xx9-FS-jTz"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sWz-bt-NN5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
