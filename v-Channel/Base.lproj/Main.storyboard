@@ -364,7 +364,7 @@
                     <connections>
                         <outlet property="animation" destination="CeH-J0-R9F" id="NGh-Aa-84s"/>
                         <outlet property="photo" destination="K6e-6H-RN3" id="Hlo-WA-8Nd"/>
-                        <segue destination="mTv-Ql-Adn" kind="show" id="MT6-OY-Vy0"/>
+                        <segue destination="mTv-Ql-Adn" kind="show" identifier="Video" id="MT6-OY-Vy0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EJo-IW-rQo" userLabel="First Responder" sceneMemberID="firstResponder"/>
