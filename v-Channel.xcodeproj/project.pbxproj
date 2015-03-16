@@ -21,6 +21,7 @@
 		2CB7956B1AB606E600B982C9 /* PixateFreestyle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CB7956A1AB606E600B982C9 /* PixateFreestyle.framework */; };
 		2CB7956E1AB6075700B982C9 /* default.css in Resources */ = {isa = PBXBuildFile; fileRef = 2CB7956D1AB6075700B982C9 /* default.css */; };
 		2CB795711AB6205100B982C9 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB795701AB6205100B982C9 /* ContactsController.m */; };
+		2CE40FD41AB6E76200234135 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE40FD31AB6E76200234135 /* ProfileController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,8 @@
 		2CB7956D1AB6075700B982C9 /* default.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = default.css; sourceTree = SOURCE_ROOT; };
 		2CB7956F1AB6205100B982C9 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CB795701AB6205100B982C9 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
+		2CE40FD21AB6E76200234135 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
+		2CE40FD31AB6E76200234135 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +69,8 @@
 			isa = PBXGroup;
 			children = (
 				2CB7952F1AB5F66000B982C9 /* v-Channel */,
+				2CB795561AB5F90E00B982C9 /* Resources */,
+				2CB795301AB5F66000B982C9 /* Supporting Files */,
 				2CB7956C1AB606FC00B982C9 /* Additional Frameworks */,
 				2CB7952E1AB5F66000B982C9 /* Products */,
 			);
@@ -82,13 +87,13 @@
 		2CB7952F1AB5F66000B982C9 /* v-Channel */ = {
 			isa = PBXGroup;
 			children = (
+				2CB795571AB5F9BD00B982C9 /* Video Call */,
 				2CB7956F1AB6205100B982C9 /* ContactsController.h */,
 				2CB795701AB6205100B982C9 /* ContactsController.m */,
-				2CB795571AB5F9BD00B982C9 /* Video Call */,
 				2CB795341AB5F66000B982C9 /* AppDelegate.h */,
 				2CB795351AB5F66000B982C9 /* AppDelegate.m */,
-				2CB795561AB5F90E00B982C9 /* Resources */,
-				2CB795301AB5F66000B982C9 /* Supporting Files */,
+				2CE40FD21AB6E76200234135 /* ProfileController.h */,
+				2CE40FD31AB6E76200234135 /* ProfileController.m */,
 			);
 			path = "v-Channel";
 			sourceTree = "<group>";
@@ -100,6 +105,7 @@
 				2CB795321AB5F66000B982C9 /* main.m */,
 			);
 			name = "Supporting Files";
+			path = "v-Channel";
 			sourceTree = "<group>";
 		};
 		2CB795561AB5F90E00B982C9 /* Resources */ = {
@@ -111,6 +117,7 @@
 				2CB7953F1AB5F66000B982C9 /* LaunchScreen.xib */,
 			);
 			name = Resources;
+			path = "v-Channel";
 			sourceTree = "<group>";
 		};
 		2CB795571AB5F9BD00B982C9 /* Video Call */ = {
@@ -213,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CB795691AB5F9D100B982C9 /* VTEncoder.m in Sources */,
+				2CE40FD41AB6E76200234135 /* ProfileController.m in Sources */,
 				2CB795651AB5F9D100B982C9 /* Camera.m in Sources */,
 				2CB795711AB6205100B982C9 /* ContactsController.m in Sources */,
 				2CB795361AB5F66000B982C9 /* AppDelegate.m in Sources */,

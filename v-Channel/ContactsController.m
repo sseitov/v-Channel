@@ -78,14 +78,25 @@
 }
 */
 
-/*
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"Call"]) {
+        UITableViewCell* cell = sender;
+        NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+//        UINavigationController *vc = [segue destinationViewController];
+//        ChatController *chat = (ChatController*)vc.topViewController;
+//        chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    } else if ([[segue identifier] isEqualToString:@"AddUser"]) {
+//        UINavigationController *vc = [segue destinationViewController];
+//        AddUserController* next = (AddUserController*)vc.topViewController;
+//        next.delegate = self;
+//        if ([AppDelegate isPad]) {
+//            next.preferredContentSize = CGSizeMake(320, 120);
+//        }
+    }
 }
-*/
 
 @end
