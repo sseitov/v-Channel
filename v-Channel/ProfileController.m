@@ -13,6 +13,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *logoButton;
 @property (weak, nonatomic) IBOutlet UIButton *signUpButton;
 @property (strong, nonatomic) UIImageView *profileImage;
+@property (weak, nonatomic) IBOutlet UITextField *login;
+@property (weak, nonatomic) IBOutlet UITextField *password;
+@property (weak, nonatomic) IBOutlet UITextField *displayName;
 
 - (IBAction)changeLogo:(UIButton *)sender;
 - (IBAction)signUp:(UIButton *)sender;

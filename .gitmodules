@@ -1,0 +1,3 @@
+[submodule "IQKeyboardManager"]
+	path = IQKeyboardManager
+	url = https://github.com/hackiftekhar/IQKeyboardManager.git

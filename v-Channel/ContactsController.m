@@ -24,6 +24,11 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [self performSegueWithIdentifier:@"Profile" sender:self];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

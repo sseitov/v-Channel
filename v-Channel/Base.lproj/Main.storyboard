@@ -219,7 +219,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="My Profile" id="ojM-IV-5Z4"/>
                     <connections>
+                        <outlet property="displayName" destination="gIg-mZ-Xiq" id="1HA-ar-X6A"/>
+                        <outlet property="login" destination="MLu-N1-ukD" id="Qws-b4-TL4"/>
                         <outlet property="logoButton" destination="exC-jR-5eT" id="yOd-WH-Qg8"/>
+                        <outlet property="password" destination="bXc-qL-hPX" id="QXG-uS-kqN"/>
                         <outlet property="signUpButton" destination="SX2-R3-23h" id="Ybg-Hm-WfY"/>
                     </connections>
                 </viewController>
