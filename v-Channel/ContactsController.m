@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "Storage.h"
 #import "MBProgressHUD.h"
+#import "CallController.h"
 
 @interface ContactsController () <NSFetchedResultsControllerDelegate>
 
@@ -147,9 +148,9 @@
         UITableViewCell* cell = sender;
         NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-//        UINavigationController *vc = [segue destinationViewController];
-//        ChatController *chat = (ChatController*)vc.topViewController;
-//        chat.user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        UINavigationController *vc = [segue destinationViewController];
+        CallController *call = (CallController*)vc.topViewController;
+        call.peer = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     }
 }
 
