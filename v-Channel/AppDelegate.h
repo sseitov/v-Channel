@@ -14,6 +14,9 @@
 @property (weak, nonatomic) UISplitViewController *splitViewController;
 
 + (BOOL)isPad;
++ (AppDelegate*)sharedInstance;
+
+- (void)pushMessageToUser:(NSString*)user;
 
 @end
 

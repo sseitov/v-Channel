@@ -12,7 +12,7 @@
 		2CB7953C1AB5F66000B982C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2CB7953A1AB5F66000B982C9 /* Main.storyboard */; };
 		2CB7953E1AB5F66000B982C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2CB7953D1AB5F66000B982C9 /* Images.xcassets */; };
 		2CB795411AB5F66000B982C9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2CB7953F1AB5F66000B982C9 /* LaunchScreen.xib */; };
-		2CB795641AB5F9D100B982C9 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB795591AB5F9D100B982C9 /* CallController.m */; };
+		2CB795641AB5F9D100B982C9 /* VideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB795591AB5F9D100B982C9 /* VideoController.m */; };
 		2CB795651AB5F9D100B982C9 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB7955B1AB5F9D100B982C9 /* Camera.m */; };
 		2CB795661AB5F9D100B982C9 /* DragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB7955D1AB5F9D100B982C9 /* DragView.m */; };
 		2CB795671AB5F9D100B982C9 /* VideoLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB7955F1AB5F9D100B982C9 /* VideoLayerView.m */; };
@@ -34,6 +34,17 @@
 		2CE40FFF1AB6F12300234135 /* IQToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE40FF01AB6F12300234135 /* IQToolbar.m */; };
 		2CE410001AB6F12300234135 /* IQUIView+IQKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE40FF21AB6F12300234135 /* IQUIView+IQKeyboardToolbar.m */; };
 		2CE410011AB6F12300234135 /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2CE40FF51AB6F12300234135 /* IQKeyboardManager.bundle */; };
+		2CE410041AB6F6A500234135 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410021AB6F6A500234135 /* Bolts.framework */; };
+		2CE410051AB6F6A500234135 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410031AB6F6A500234135 /* Parse.framework */; };
+		2CE410071AB6F86E00234135 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410061AB6F86E00234135 /* libsqlite3.dylib */; };
+		2CE410091AB6F8BD00234135 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */; };
+		2CE4100B1AB6F8DA00234135 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */; };
+		2CE4100D1AB6F95100234135 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100C1AB6F95100234135 /* libz.dylib */; };
+		2CE410111AB6FB9B00234135 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410101AB6FB9B00234135 /* Storage.m */; };
+		2CE410151AB70D4500234135 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410141AB70D4500234135 /* MBProgressHUD.m */; };
+		2CE410181AB71DBF00234135 /* AddContactController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410171AB71DBF00234135 /* AddContactController.m */; };
+		2CE4101B1AB7413E00234135 /* ContactModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */; };
+		2CE4101E1AB7425200234135 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4101D1AB7425200234135 /* Contact.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,8 +56,8 @@
 		2CB7953B1AB5F66000B982C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2CB7953D1AB5F66000B982C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2CB795401AB5F66000B982C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		2CB795581AB5F9D100B982C9 /* CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CallController.h; path = "Video Call/CallController.h"; sourceTree = "<group>"; };
-		2CB795591AB5F9D100B982C9 /* CallController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CallController.m; path = "Video Call/CallController.m"; sourceTree = "<group>"; };
+		2CB795581AB5F9D100B982C9 /* VideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoController.h; path = "Video Call/VideoController.h"; sourceTree = "<group>"; };
+		2CB795591AB5F9D100B982C9 /* VideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoController.m; path = "Video Call/VideoController.m"; sourceTree = "<group>"; };
 		2CB7955A1AB5F9D100B982C9 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = "Video Call/Camera.h"; sourceTree = "<group>"; };
 		2CB7955B1AB5F9D100B982C9 /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Camera.m; path = "Video Call/Camera.m"; sourceTree = "<group>"; };
 		2CB7955C1AB5F9D100B982C9 /* DragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DragView.h; path = "Video Call/DragView.h"; sourceTree = "<group>"; };
@@ -89,6 +100,21 @@
 		2CE40FF21AB6F12300234135 /* IQUIView+IQKeyboardToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IQUIView+IQKeyboardToolbar.m"; sourceTree = "<group>"; };
 		2CE40FF31AB6F12300234135 /* KeyboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardManager.h; sourceTree = "<group>"; };
 		2CE40FF51AB6F12300234135 /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQKeyboardManager.bundle; sourceTree = "<group>"; };
+		2CE410021AB6F6A500234135 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = /Users/sseitov/Documents/SDK/parse/Bolts.framework; sourceTree = "<absolute>"; };
+		2CE410031AB6F6A500234135 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = /Users/sseitov/Documents/SDK/parse/Parse.framework; sourceTree = "<absolute>"; };
+		2CE410061AB6F86E00234135 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		2CE4100C1AB6F95100234135 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		2CE4100F1AB6FB9B00234135 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
+		2CE410101AB6FB9B00234135 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; };
+		2CE410131AB70D4500234135 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
+		2CE410141AB70D4500234135 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
+		2CE410161AB71DBF00234135 /* AddContactController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddContactController.h; sourceTree = "<group>"; };
+		2CE410171AB71DBF00234135 /* AddContactController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddContactController.m; sourceTree = "<group>"; };
+		2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ContactModel.xcdatamodel; sourceTree = "<group>"; };
+		2CE4101C1AB7425200234135 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
+		2CE4101D1AB7425200234135 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +122,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CE4100D1AB6F95100234135 /* libz.dylib in Frameworks */,
+				2CE410071AB6F86E00234135 /* libsqlite3.dylib in Frameworks */,
+				2CE4100B1AB6F8DA00234135 /* MobileCoreServices.framework in Frameworks */,
+				2CE410091AB6F8BD00234135 /* SystemConfiguration.framework in Frameworks */,
+				2CE410041AB6F6A500234135 /* Bolts.framework in Frameworks */,
+				2CE410051AB6F6A500234135 /* Parse.framework in Frameworks */,
 				2CB7956B1AB606E600B982C9 /* PixateFreestyle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,6 +138,7 @@
 		2CB795241AB5F66000B982C9 = {
 			isa = PBXGroup;
 			children = (
+				2CE410121AB70D2700234135 /* MBProgressHUD */,
 				2CE40FD51AB6F12300234135 /* IQKeyBoardManager */,
 				2CB7952F1AB5F66000B982C9 /* v-Channel */,
 				2CB795561AB5F90E00B982C9 /* Resources */,
@@ -126,13 +159,16 @@
 		2CB7952F1AB5F66000B982C9 /* v-Channel */ = {
 			isa = PBXGroup;
 			children = (
+				2CE4100E1AB6FB7E00234135 /* Storage */,
 				2CB795571AB5F9BD00B982C9 /* Video Call */,
 				2CB7956F1AB6205100B982C9 /* ContactsController.h */,
 				2CB795701AB6205100B982C9 /* ContactsController.m */,
-				2CB795341AB5F66000B982C9 /* AppDelegate.h */,
-				2CB795351AB5F66000B982C9 /* AppDelegate.m */,
+				2CE410161AB71DBF00234135 /* AddContactController.h */,
+				2CE410171AB71DBF00234135 /* AddContactController.m */,
 				2CE40FD21AB6E76200234135 /* ProfileController.h */,
 				2CE40FD31AB6E76200234135 /* ProfileController.m */,
+				2CB795341AB5F66000B982C9 /* AppDelegate.h */,
+				2CB795351AB5F66000B982C9 /* AppDelegate.m */,
 			);
 			path = "v-Channel";
 			sourceTree = "<group>";
@@ -162,8 +198,8 @@
 		2CB795571AB5F9BD00B982C9 /* Video Call */ = {
 			isa = PBXGroup;
 			children = (
-				2CB795581AB5F9D100B982C9 /* CallController.h */,
-				2CB795591AB5F9D100B982C9 /* CallController.m */,
+				2CB795581AB5F9D100B982C9 /* VideoController.h */,
+				2CB795591AB5F9D100B982C9 /* VideoController.m */,
 				2CB7955A1AB5F9D100B982C9 /* Camera.h */,
 				2CB7955B1AB5F9D100B982C9 /* Camera.m */,
 				2CB7955C1AB5F9D100B982C9 /* DragView.h */,
@@ -181,7 +217,13 @@
 		2CB7956C1AB606FC00B982C9 /* Additional Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2CE4100C1AB6F95100234135 /* libz.dylib */,
+				2CE410061AB6F86E00234135 /* libsqlite3.dylib */,
+				2CE410021AB6F6A500234135 /* Bolts.framework */,
+				2CE410031AB6F6A500234135 /* Parse.framework */,
 				2CB7956A1AB606E600B982C9 /* PixateFreestyle.framework */,
+				2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */,
+				2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */,
 			);
 			name = "Additional Frameworks";
 			sourceTree = "<group>";
@@ -268,6 +310,27 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		2CE4100E1AB6FB7E00234135 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				2CE4100F1AB6FB9B00234135 /* Storage.h */,
+				2CE410101AB6FB9B00234135 /* Storage.m */,
+				2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */,
+				2CE4101C1AB7425200234135 /* Contact.h */,
+				2CE4101D1AB7425200234135 /* Contact.m */,
+			);
+			name = Storage;
+			sourceTree = "<group>";
+		};
+		2CE410121AB70D2700234135 /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				2CE410131AB70D4500234135 /* MBProgressHUD.h */,
+				2CE410141AB70D4500234135 /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -343,6 +406,7 @@
 			files = (
 				2CB795691AB5F9D100B982C9 /* VTEncoder.m in Sources */,
 				2CE40FD41AB6E76200234135 /* ProfileController.m in Sources */,
+				2CE410151AB70D4500234135 /* MBProgressHUD.m in Sources */,
 				2CE40FFE1AB6F12300234135 /* IQTitleBarButtonItem.m in Sources */,
 				2CE40FF81AB6F12300234135 /* IQUIWindow+Hierarchy.m in Sources */,
 				2CB795651AB5F9D100B982C9 /* Camera.m in Sources */,
@@ -350,14 +414,18 @@
 				2CE40FFC1AB6F12300234135 /* IQTextView.m in Sources */,
 				2CE40FF71AB6F12300234135 /* IQUIView+Hierarchy.m in Sources */,
 				2CE40FFB1AB6F12300234135 /* IQSegmentedNextPrevious.m in Sources */,
+				2CE410181AB71DBF00234135 /* AddContactController.m in Sources */,
 				2CE40FFD1AB6F12300234135 /* IQBarButtonItem.m in Sources */,
 				2CE410001AB6F12300234135 /* IQUIView+IQKeyboardToolbar.m in Sources */,
+				2CE410111AB6FB9B00234135 /* Storage.m in Sources */,
 				2CB795361AB5F66000B982C9 /* AppDelegate.m in Sources */,
 				2CB795331AB5F66000B982C9 /* main.m in Sources */,
 				2CE40FF91AB6F12300234135 /* IQKeyboardManager.m in Sources */,
-				2CB795641AB5F9D100B982C9 /* CallController.m in Sources */,
+				2CB795641AB5F9D100B982C9 /* VideoController.m in Sources */,
+				2CE4101E1AB7425200234135 /* Contact.m in Sources */,
 				2CE40FFA1AB6F12300234135 /* IQKeyboardReturnKeyHandler.m in Sources */,
 				2CE40FFF1AB6F12300234135 /* IQToolbar.m in Sources */,
+				2CE4101B1AB7413E00234135 /* ContactModel.xcdatamodeld in Sources */,
 				2CB795671AB5F9D100B982C9 /* VideoLayerView.m in Sources */,
 				2CB795681AB5F9D100B982C9 /* VTDecoder.m in Sources */,
 				2CB795661AB5F9D100B982C9 /* DragView.m in Sources */,
@@ -475,6 +543,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
+					/Users/sseitov/Documents/SDK/parse,
 				);
 				INFOPLIST_FILE = "v-Channel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -490,6 +559,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
+					/Users/sseitov/Documents/SDK/parse,
 				);
 				INFOPLIST_FILE = "v-Channel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -519,6 +589,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */,
+			);
+			currentVersion = 2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */;
+			path = ContactModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 2CB795251AB5F66000B982C9 /* Project object */;
 }

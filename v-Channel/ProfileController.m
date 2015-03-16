@@ -7,6 +7,10 @@
 //
 
 #import "ProfileController.h"
+#import "AppDelegate.h"
+#import <Parse/Parse.h>
+#import "Storage.h"
+#import "MBProgressHUD.h"
 
 @interface ProfileController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UITextFieldDelegate>
 
@@ -36,6 +40,35 @@
     _signUpButton.layer.masksToBounds = YES;
     _signUpButton.layer.cornerRadius = 7.0;
     _signUpButton.layer.borderColor = _signUpButton.backgroundColor.CGColor;
+    
+    if (![AppDelegate isPad]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                              target:self
+                                                                                              action:@selector(goBack)];
+    }
+    [self updateUI];
+}
+
+- (void)goBack
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)updateUI
+{
+    if ([PFUser currentUser]) {
+        PFUser* user = [PFUser currentUser];
+        _login.text = user.username;
+        _login.enabled = NO;
+        _password.enabled = NO;
+        _displayName.text = user[@"displayName"];
+        NSData* photoData = user[@"photo"];
+        if (photoData) {
+            _profileImage.image = [UIImage imageWithData:photoData];
+            [_logoButton addSubview:_profileImage];
+        }
+        [_signUpButton setTitle:@"Update" forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - Create Profile
@@ -124,7 +157,6 @@
         // We only handle a still image
         UIImage *imageToSave = [self scaleImage:(UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage]
                                    toResolution:128];
-        NSData *pngData = UIImageJPEGRepresentation(imageToSave, .5);
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image = imageToSave;
             if (_profileImage.superview) {
@@ -143,7 +175,76 @@
 
 #pragma mark - SignUp
 
-- (IBAction)signUp:(UIButton *)sender {
+- (void)errorLogin
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error signup"
+                                                    message:@"Check your login, may be this login already exists"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"Ok"
+                                          otherButtonTitles:nil, nil];
+    [alert show];
+}
+
+- (void)createNewUserWithLogin:(NSString*)login password:(NSString*)password
+{
+    PFUser* user = [PFUser user];
+    user.username = login;
+    user.password = password;
+    user.email = login;
+    if (!user.username || !user.password) {
+        [self errorLogin];
+        return;
+    }
+    if (_displayName.text) {
+        user[@"displayName"] = _displayName.text;
+    }
+    if (_profileImage.image) {
+        NSData *photo = UIImageJPEGRepresentation(_profileImage.image, .5);
+        user[@"photo"] = photo;
+    }
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        if (!error) {
+            [user saveInBackground];
+            [PFInstallation currentInstallation][@"userId"] = _login.text;
+            [[PFInstallation currentInstallation] saveInBackground];
+            [Storage saveLogin:_login.text];
+            [Storage savePassword:_password.text];
+            [self updateUI];
+        } else {
+            NSString *errorString = [error userInfo][@"error"];
+            NSLog(@"%@", errorString);
+            [self errorLogin];
+        }
+    }];
+}
+
+- (IBAction)signUp:(UIButton *)sender
+{
+    if ([PFUser currentUser]) {
+        PFUser* user = [PFUser currentUser];
+        user[@"displayName"] = _displayName.text;
+        if (_profileImage.image) {
+            NSData *photo = UIImageJPEGRepresentation(_profileImage.image, .5);
+            user[@"photo"] = photo;
+        }
+        [user saveInBackground];
+    } else {
+        if (!_login.text || !_password.text) {
+            [self errorLogin];
+            return;
+        }
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [PFUser logInWithUsernameInBackground:_login.text password:_password.text block:^(PFUser *user, NSError *error) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            if (user) {
+                [self updateUI];
+            } else {
+                [self createNewUserWithLogin:_login.text password:_password.text];
+            }
+        }];
+    }
 }
 
 @end

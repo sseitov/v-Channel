@@ -1,19 +1,19 @@
 //
-//  CallController.m
+//  VideoController.m
 //  iNear
 //
 //  Created by Sergey Seitov on 07.03.15.
 //  Copyright (c) 2015 Sergey Seitov. All rights reserved.
 //
 
-#import "CallController.h"
+#import "VideoController.h"
 #import "DragView.h"
 #import "Camera.h"
 #import "VTEncoder.h"
 #import "VTDecoder.h"
 #import "AppDelegate.h"
 
-@interface CallController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
+@interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
     dispatch_queue_t _captureQueue;
 }
@@ -33,7 +33,7 @@
 
 @end
 
-@implementation CallController
+@implementation VideoController
 
 - (void)viewDidLoad
 {

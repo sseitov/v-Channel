@@ -1,5 +1,5 @@
 //
-//  CallController.h
+//  VideoController.h
 //  iNear
 //
 //  Created by Sergey Seitov on 07.03.15.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CallController : UIViewController
+@interface VideoController : UIViewController
 
 @end

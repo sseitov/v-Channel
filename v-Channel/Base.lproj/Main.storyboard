@@ -9,7 +9,7 @@
         <scene sceneID="G2d-Ot-Hc1">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="EAK-lN-vvt" customClass="ContactsController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="8Eq-2q-Hld">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" id="8Eq-2q-Hld">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -18,6 +18,29 @@
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nmQ-M5-fRz" id="lVU-RI-BGf">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="juG-yQ-Ogk">
+                                            <rect key="frame" x="8" y="0.0" width="60" height="60"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="60" id="7Mc-wP-RTz"/>
+                                                <constraint firstAttribute="height" constant="60" id="7l9-tX-JHN"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zyw-Ap-7Vh">
+                                            <rect key="frame" x="76" y="0.0" width="516" height="60"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Zyw-Ap-7Vh" firstAttribute="trailing" secondItem="lVU-RI-BGf" secondAttribute="trailingMargin" id="72j-xc-27P"/>
+                                        <constraint firstItem="Zyw-Ap-7Vh" firstAttribute="top" secondItem="lVU-RI-BGf" secondAttribute="topMargin" constant="-8" id="7KL-VN-lZ5"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Zyw-Ap-7Vh" secondAttribute="bottom" constant="-8" id="AOx-QD-W2L"/>
+                                        <constraint firstAttribute="centerY" secondItem="juG-yQ-Ogk" secondAttribute="centerY" id="Tav-zC-8gQ"/>
+                                        <constraint firstItem="juG-yQ-Ogk" firstAttribute="leading" secondItem="lVU-RI-BGf" secondAttribute="leadingMargin" id="kid-UX-Fn6"/>
+                                        <constraint firstItem="Zyw-Ap-7Vh" firstAttribute="leading" secondItem="juG-yQ-Ogk" secondAttribute="trailing" constant="8" id="rW4-0M-R1d"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <segue destination="f5D-1T-vTX" kind="showDetail" identifier="Call" id="4Xi-Jy-ypY"/>
@@ -37,7 +60,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="3FI-rv-VXV">
                             <connections>
-                                <segue destination="wsQ-WW-Wqa" kind="show" id="tja-0D-1UI"/>
+                                <segue destination="QGm-ss-N9I" kind="show" id="yFe-1G-nHG"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -46,52 +69,89 @@
             </objects>
             <point key="canvasLocation" x="1040" y="245"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="1On-m4-Ki8">
+        <!--Add Contact Controller-->
+        <scene sceneID="lOe-3Q-Zwx">
             <objects>
-                <viewController id="wsQ-WW-Wqa" sceneMemberID="viewController">
+                <viewController id="QGm-ss-N9I" customClass="AddContactController" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="CoB-kC-lRM"/>
-                        <viewControllerLayoutGuide type="bottom" id="ufl-BW-nfd"/>
+                        <viewControllerLayoutGuide type="top" id="8v2-zq-zms"/>
+                        <viewControllerLayoutGuide type="bottom" id="WY2-k7-2PB"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="VUy-yt-s2E">
+                    <view key="view" contentMode="scaleToFill" id="wrc-lG-UVR">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Njl-xM-4xw">
-                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="ZA3-G4-uxY">
+                                <rect key="frame" x="200" y="72" width="200" height="200"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="IyJ-z0-PNf"/>
+                                    <constraint firstAttribute="height" constant="200" id="UPa-KP-b8B"/>
+                                    <constraint firstAttribute="width" constant="200" id="txS-Kc-2o1"/>
                                 </constraints>
-                                <textInputTraits key="textInputTraits"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e-mail" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="D47-M2-Qe4">
+                                <rect key="frame" x="200" y="318" width="200" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="8BF-qJ-j4g"/>
+                                    <constraint firstAttribute="width" constant="200" id="RYM-0q-l5c"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="search"/>
                                 <connections>
-                                    <outlet property="delegate" destination="wsQ-WW-Wqa" id="Cnd-Mc-vo7"/>
+                                    <outlet property="delegate" destination="QGm-ss-N9I" id="By7-cV-SgV"/>
                                 </connections>
-                            </searchBar>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ak4-ZM-x9S">
+                                <rect key="frame" x="200" y="289" width="200" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="59i-cJ-KAn"/>
+                                    <constraint firstAttribute="width" constant="200" id="DzU-u8-oL5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xd0-R4-dwM">
+                                <rect key="frame" x="200" y="380" width="200" height="44"/>
+                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="98x-7L-pzB"/>
+                                    <constraint firstAttribute="height" constant="44" id="ie8-vC-6T8"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Add Friend">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addFriend:" destination="QGm-ss-N9I" eventType="touchUpInside" id="5dp-YZ-qCc"/>
+                                    <action selector="signUp:" destination="AzN-m4-t0l" eventType="touchUpInside" id="r2x-pq-h9w"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="Njl-xM-4xw" secondAttribute="trailing" constant="-16" id="A2G-Lr-iGX"/>
-                            <constraint firstItem="Njl-xM-4xw" firstAttribute="top" secondItem="CoB-kC-lRM" secondAttribute="bottom" id="Eul-az-RRC"/>
-                            <constraint firstItem="Njl-xM-4xw" firstAttribute="leading" secondItem="VUy-yt-s2E" secondAttribute="leadingMargin" constant="-16" id="tPm-20-PsY"/>
+                            <constraint firstItem="Xd0-R4-dwM" firstAttribute="top" secondItem="D47-M2-Qe4" secondAttribute="bottom" constant="32" id="DSO-21-lUj"/>
+                            <constraint firstItem="ZA3-G4-uxY" firstAttribute="top" secondItem="8v2-zq-zms" secondAttribute="bottom" constant="8" id="PIz-Ic-6cW"/>
+                            <constraint firstAttribute="centerX" secondItem="ZA3-G4-uxY" secondAttribute="centerX" id="RpP-ZG-BGP"/>
+                            <constraint firstItem="D47-M2-Qe4" firstAttribute="top" secondItem="Ak4-ZM-x9S" secondAttribute="bottom" constant="8" id="UIB-Kc-74p"/>
+                            <constraint firstItem="Ak4-ZM-x9S" firstAttribute="top" secondItem="ZA3-G4-uxY" secondAttribute="bottom" constant="17" id="cRb-IV-PRC"/>
+                            <constraint firstAttribute="centerX" secondItem="Ak4-ZM-x9S" secondAttribute="centerX" id="fVU-xF-W2y"/>
+                            <constraint firstAttribute="centerX" secondItem="D47-M2-Qe4" secondAttribute="centerX" id="hu8-YM-iuG"/>
+                            <constraint firstAttribute="centerX" secondItem="Xd0-R4-dwM" secondAttribute="centerX" id="n8t-aX-V7i"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="searchDisplayController" destination="ZPu-Ie-0kB" id="h4Q-5y-ZUo"/>
+                        <outlet property="addFriendButton" destination="Xd0-R4-dwM" id="rAQ-Fj-APm"/>
+                        <outlet property="nick" destination="Ak4-ZM-x9S" id="XEh-k6-iaR"/>
+                        <outlet property="photo" destination="ZA3-G4-uxY" id="MIs-YI-bC1"/>
+                        <outlet property="user" destination="D47-M2-Qe4" id="ed6-pG-2bX"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="epV-9a-u5S" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="ZPu-Ie-0kB">
-                    <connections>
-                        <outlet property="delegate" destination="wsQ-WW-Wqa" id="9Ja-sO-Tyu"/>
-                        <outlet property="searchBar" destination="Njl-xM-4xw" id="zXg-Wj-PhO"/>
-                        <outlet property="searchContentsController" destination="wsQ-WW-Wqa" id="pYO-lT-Dd4"/>
-                        <outlet property="searchResultsDataSource" destination="wsQ-WW-Wqa" id="v5y-Xa-CYg"/>
-                        <outlet property="searchResultsDelegate" destination="wsQ-WW-Wqa" id="Tn7-9T-IbU"/>
-                    </connections>
-                </searchDisplayController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4ml-qi-LxY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1040" y="1001"/>
+            <point key="canvasLocation" x="1040" y="1013"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fWE-Ea-dFJ">
@@ -156,7 +216,7 @@
                                     <constraint firstAttribute="height" constant="30" id="7jf-HU-vYx"/>
                                     <constraint firstAttribute="width" constant="280" id="Hu8-UJ-ErX"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="AzN-m4-t0l" id="JUQ-aF-ic4"/>
@@ -168,7 +228,7 @@
                                     <constraint firstAttribute="width" constant="160" id="45R-Sb-HXT"/>
                                     <constraint firstAttribute="height" constant="30" id="FR7-Ty-8s4"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="AzN-m4-t0l" id="ToU-Ty-VqC"/>
@@ -180,7 +240,7 @@
                                     <constraint firstAttribute="width" constant="200" id="Hbo-2Z-RwY"/>
                                     <constraint firstAttribute="height" constant="30" id="pXF-gv-qGH"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
                                 <connections>
                                     <outlet property="delegate" destination="AzN-m4-t0l" id="iFg-T2-PvT"/>
@@ -259,10 +319,10 @@
             </objects>
             <point key="canvasLocation" x="-365" y="245"/>
         </scene>
-        <!--Call Controller-->
+        <!--Video Controller-->
         <scene sceneID="WWk-30-4ch">
             <objects>
-                <viewController id="mTv-Ql-Adn" customClass="CallController" sceneMemberID="viewController">
+                <viewController id="mTv-Ql-Adn" customClass="VideoController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gab-V0-giq"/>
                         <viewControllerLayoutGuide type="bottom" id="rzR-Cy-4zg"/>
