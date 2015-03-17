@@ -18,6 +18,7 @@
 - (void)saveContext;
 - (void)addContact:(NSString*)userId withNickName:(NSString*)nick photo:(NSData*)photo;
 - (void)deleteContact:(Contact*)contact;
+- (Contact*)contactForUser:(NSString*)user;
 
 + (NSString*)getLogin;
 + (NSString*)getPassword;

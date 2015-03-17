@@ -10,10 +10,13 @@
 #import <Parse/Parse.h>
 #import "Storage.h"
 #import "PNImports.h"
+#import "ContactsController.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate, PNDelegate>
 
 @property (atomic) BOOL disconnectedOnNetworkError;
+@property (weak, nonatomic) ContactsController *contactsController;
+@property (strong, nonatomic) Contact* incommingUser;
 
 @end
 
@@ -59,6 +62,9 @@
     _splitViewController.presentsWithGesture = NO;
     _splitViewController.delegate = self;
     
+    UINavigationController *master = _splitViewController.viewControllers[0];
+    _contactsController = master.topViewController;
+    
     return YES;
 }
 
@@ -72,7 +78,18 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    [PFPush handlePush:userInfo];
+    _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
+    if (application.applicationState == UIApplicationStateActive) {
+        if (_incommingUser) {
+            if ([_contactsController.activeCall.peer.userId isEqual:_incommingUser.userId]) {
+                [_contactsController.activeCall accept];
+            } else {
+                [_contactsController performSegueWithIdentifier:@"Call" sender:_incommingUser];
+            }
+        }
+    } else {
+        [PFPush handlePush:userInfo];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -141,8 +158,11 @@
     // Build a query to match user
     PFQuery *query = [PFUser query];
     [query whereKey:@"userId" equalTo:user];
-    NSString *message = [NSString stringWithFormat:@"You have received a message from %@", [Storage getLogin]];
-    NSDictionary *data = @{@"alert" : message, @"badge" : @"Increment", @"sound": @"default"};
+    NSString *message = [NSString stringWithFormat:@"Incomming call from %@", [Storage getLogin]];
+    NSDictionary *data = @{@"alert" : message,
+                           @"badge" : @"Increment",
+                           @"sound": @"default",
+                           @"user" : [Storage getLogin]};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];
     [push setData:data];
@@ -171,6 +191,10 @@
 {
     NSLog(@"#1 PubNub client was unable to connect because of error: %@", error);
     self.disconnectedOnNetworkError = error.code == kPNClientConnectionFailedOnInternetFailureError;
+}
+
+- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message
+{
 }
 
 @end

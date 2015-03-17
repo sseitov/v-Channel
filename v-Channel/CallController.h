@@ -12,5 +12,8 @@
 @interface CallController : UIViewController
 
 @property (strong, nonatomic) Contact *peer;
+@property (nonatomic) BOOL fromMe;
+
+- (void)accept;
 
 @end

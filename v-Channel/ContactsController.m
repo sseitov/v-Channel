@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import "Storage.h"
 #import "MBProgressHUD.h"
-#import "CallController.h"
 
 @interface ContactsController () <NSFetchedResultsControllerDelegate>
 
@@ -145,12 +144,19 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"Call"]) {
-        UITableViewCell* cell = sender;
-        NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
-        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         UINavigationController *vc = [segue destinationViewController];
-        CallController *call = (CallController*)vc.topViewController;
-        call.peer = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        _activeCall = (CallController*)vc.topViewController;
+        
+        if ([sender isKindOfClass:[UITableViewCell class]]) {
+            UITableViewCell* cell = sender;
+            NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            _activeCall.peer = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+            _activeCall.fromMe = YES;
+        } else {
+            _activeCall.peer = sender;
+            _activeCall.fromMe = NO;
+        }
     }
 }
 

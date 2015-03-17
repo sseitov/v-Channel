@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Storage.h"
 
 @interface VideoController : UIViewController
+
+@property (strong, nonatomic) Contact *peer;
 
 @end

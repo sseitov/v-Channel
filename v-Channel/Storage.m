@@ -206,6 +206,14 @@
     }
 }
 
+- (Contact*)contactForUser:(NSString*)user
+{
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Contact"];
+    request.predicate = [NSPredicate predicateWithFormat:@"userId == %@", user];
+    NSError *error = nil;
+    return [[self.managedObjectContext executeFetchRequest:request error:&error] firstObject];
+}
+
 #pragma mark - User Defaults
 
 + (NSString*)getLogin

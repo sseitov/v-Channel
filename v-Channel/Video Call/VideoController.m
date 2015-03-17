@@ -12,6 +12,7 @@
 #import "VTEncoder.h"
 #import "VTDecoder.h"
 #import "AppDelegate.h"
+#import "PNImports.h"
 
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
@@ -30,6 +31,9 @@
 @property (nonatomic) UIDeviceOrientation orientation;
 @property (nonatomic) double aspectRatio;
 @property (nonatomic) BOOL isCapture;
+
+@property (strong, nonatomic) PNChannel *inChannel;
+@property (strong, nonatomic) PNChannel *outChannel;
 
 @end
 
@@ -53,13 +57,30 @@
                                              selector:@selector(deviceOrientationDidChange:)
                                                  name: UIDeviceOrientationDidChangeNotification
                                                object:nil];
-}
+    
+    _outChannel = [PNChannel channelWithName:[Storage getLogin] shouldObservePresence:YES];
+    _inChannel = [PNChannel channelWithName:_peer.userId shouldObservePresence:YES];
+    [PubNub subscribeOn:@[_inChannel]];
+    
+    [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self withBlock:^(PNMessage *message) {
+        NSData* data = [[NSData alloc] initWithBase64EncodedString:message.message options:kNilOptions];
+        NSLog(@"received %d bytes", (int)data.length);
+        if (!_decoder.isOpened) {
+            CGSize sz;
+            if (_aspectRatio <= 1.) {
+                sz.width = _peerView.frame.size.width;
+                sz.height = _peerView.frame.size.width * _aspectRatio;
+            } else {
+                sz.height = _peerView.frame.size.height;
+                sz.width = _peerView.frame.size.height / _aspectRatio;
+            }
+            [_decoder openForWidth:sz.width height:sz.height sps:_encoder.sps pps:_encoder.pps];
+        }
+        if (_decoder.isOpened) {
+            [_decoder decodeData:data];
+        }
+    }];
 
-- (void)dealloc
-{
-    [[Camera shared] shutdown];
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)deviceOrientationDidChange:(NSNotification*)notify
@@ -72,9 +93,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     _orientation = [[UIDevice currentDevice] orientation];
-    if (![AppDelegate isPad]) {
-        [self endCall:self.navigationItem.leftBarButtonItem];
-    }
+    [self startCapture];
 }
 
 - (void)startCapture
@@ -106,17 +125,14 @@
 
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    if (self.isCapture) {
-        [self stopCapture];
-        if (![AppDelegate isPad]) {
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            sender.image = [UIImage imageNamed:@"call"];
-        }
-    } else {
-        [self startCapture];
-        sender.image = [UIImage imageNamed:@"end-call"];
-    }
+    [self stopCapture];
+    [[PNObservationCenter defaultCenter] removeMessageReceiveObserver:self];
+    [PubNub unsubscribeFrom:@[_inChannel]];
+    [[Camera shared] shutdown];
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -139,33 +155,22 @@
     if (_encoder.isOpened) {
         [_encoder encodeBuffer:pixelBuffer];
     }
+    [_selfView drawBuffer:sampleBuffer];
 }
 
 #pragma mark - VTEncoder delegare
 
 - (void)encoder:(VTEncoder*)encoder encodedData:(NSData*)data
 {
-    if (!_decoder.isOpened) {
-        CGSize sz;
-        if (_aspectRatio <= 1.) {
-            sz.width = _peerView.frame.size.width;
-            sz.height = _peerView.frame.size.width * _aspectRatio;
-        } else {
-            sz.height = _peerView.frame.size.height;
-            sz.width = _peerView.frame.size.height / _aspectRatio;
-        }
-        [_decoder openForWidth:sz.width height:sz.height sps:_encoder.sps pps:_encoder.pps];
-    }
-    if (_decoder.isOpened) {
-        [_decoder decodeData:data];
-    }
+    NSString *dataStr = [data base64EncodedStringWithOptions:kNilOptions];
+    NSLog(@"send %d bytes", (int)dataStr.length);
+    [PubNub sendMessage:dataStr toChannel:_outChannel];
 }
 
 #pragma mark - VTDeccoder delegare
 
 - (void)decoder:(VTDecoder*)decoder decodedBuffer:(CMSampleBufferRef)buffer
 {
-    [_selfView drawBuffer:buffer];
     [_peerView drawBuffer:buffer];
     CFRelease(buffer);
 }

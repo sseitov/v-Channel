@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CallController.h"
 
 @interface ContactsController : UITableViewController
+
+@property (assign, nonatomic) CallController *activeCall;
 
 @end
