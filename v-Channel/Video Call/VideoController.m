@@ -22,8 +22,9 @@ enum MediaType {
 enum Command {
     Start,
     Started,
+    Stop,
     Data,
-    Stop
+    Finish
 };
 
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
@@ -94,13 +95,18 @@ enum Command {
                 case Started:
                     self.decoderIsOpened = YES;
                     break;
+                case Stop:
+                    [_decoder close];
+                    [_peerView clear];
+                    self.decoderIsOpened = NO;
+                    break;
                 case Data:
                     if (_decoder.isOpened) {
                         [_decoder decodeData:[[NSData alloc] initWithBase64EncodedString:[json objectForKey:@"data"]
                                                                                  options:kNilOptions]];
                     }
                     break;
-                case Stop:
+                case Finish:
                     [self finish];
                     break;
                 default:
@@ -137,10 +143,18 @@ enum Command {
     if (self.isCapture) {
         [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
         [_encoder close];
-        [_decoder close];
+//        [_decoder close];
         [_selfView clear];
-        [_peerView clear];
+//        [_peerView clear];
         self.isCapture = NO;
+        
+        NSError *error;
+        NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video], @"command" : [NSNumber numberWithInt:Stop]};
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json options:0 error:&error];
+        NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSLog(@"send %d bytes", (int)jsonStr.length);
+        [PubNub sendMessage:jsonStr toChannel:_outChannel];
+
     }
 }
 
@@ -177,7 +191,7 @@ enum Command {
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
     NSError *error;
-    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video], @"command" : [NSNumber numberWithInt:Stop]};
+    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video], @"command" : [NSNumber numberWithInt:Finish]};
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json options:0 error:&error];
     NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     NSLog(@"send %d bytes", (int)jsonStr.length);
