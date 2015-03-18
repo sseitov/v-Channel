@@ -9,7 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "Storage.h"
 
+@protocol CallControllerDelegate <NSObject>
+
+- (void)callControllerDidFinish;
+
+@end
+
 @interface CallController : UIViewController
+
+@property (weak, nonatomic) id<CallControllerDelegate> delegate;
 
 @property (strong, nonatomic) Contact *peer;
 @property (nonatomic) BOOL fromMe;

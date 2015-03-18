@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "Storage.h"
+#import "CallController.h"
 
 @interface VideoController : UIViewController
 
+@property (weak, nonatomic) id<CallControllerDelegate> delegate;
 @property (strong, nonatomic) Contact *peer;
 
 @end

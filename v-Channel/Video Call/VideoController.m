@@ -14,6 +14,18 @@
 #import "AppDelegate.h"
 #import "PNImports.h"
 
+enum MediaType {
+    Video,
+    Audio
+};
+
+enum Command {
+    Start,
+    Started,
+    Data,
+    Stop
+};
+
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
     dispatch_queue_t _captureQueue;
@@ -27,6 +39,7 @@
 
 @property (strong, nonatomic) VTEncoder* encoder;
 @property (strong, nonatomic) VTDecoder* decoder;
+@property (atomic) BOOL decoderIsOpened;
 
 @property (nonatomic) UIDeviceOrientation orientation;
 @property (nonatomic) double aspectRatio;
@@ -63,21 +76,36 @@
     [PubNub subscribeOn:@[_inChannel]];
     
     [[PNObservationCenter defaultCenter] addMessageReceiveObserver:self withBlock:^(PNMessage *message) {
-        NSData* data = [[NSData alloc] initWithBase64EncodedString:message.message options:kNilOptions];
-        NSLog(@"received %d bytes", (int)data.length);
-        if (!_decoder.isOpened) {
-            CGSize sz;
-            if (_aspectRatio <= 1.) {
-                sz.width = _peerView.frame.size.width;
-                sz.height = _peerView.frame.size.width * _aspectRatio;
-            } else {
-                sz.height = _peerView.frame.size.height;
-                sz.width = _peerView.frame.size.height / _aspectRatio;
+        NSDictionary *json = message.message;
+        if ([[json objectForKey:@"media"] intValue] == Video) {
+            switch ([[json objectForKey:@"command"] intValue]) {
+                case Start:
+                    if (!_decoder.isOpened) {
+                        NSDictionary* params = [json objectForKey:@"data"];
+                        if ([_decoder openForWidth:[[params objectForKey:@"width"] intValue]
+                                            height:[[params objectForKey:@"height"] intValue]
+                                               sps:[[NSData alloc] initWithBase64EncodedString:[params objectForKey:@"sps"] options:kNilOptions]
+                                               pps:[[NSData alloc] initWithBase64EncodedString:[params objectForKey:@"pps"] options:kNilOptions]])
+                        {
+                            [self started];
+                        }
+                    }
+                    break;
+                case Started:
+                    self.decoderIsOpened = YES;
+                    break;
+                case Data:
+                    if (_decoder.isOpened) {
+                        [_decoder decodeData:[[NSData alloc] initWithBase64EncodedString:[json objectForKey:@"data"]
+                                                                                 options:kNilOptions]];
+                    }
+                    break;
+                case Stop:
+                    [self finish];
+                    break;
+                default:
+                    break;
             }
-            [_decoder openForWidth:sz.width height:sz.height sps:_encoder.sps pps:_encoder.pps];
-        }
-        if (_decoder.isOpened) {
-            [_decoder decodeData:data];
         }
     }];
 
@@ -123,16 +151,39 @@
     [self startCapture];
 }
 
-- (IBAction)endCall:(UIBarButtonItem*)sender
+- (void)finish
 {
     [self stopCapture];
     [[PNObservationCenter defaultCenter] removeMessageReceiveObserver:self];
     [PubNub unsubscribeFrom:@[_inChannel]];
     [[Camera shared] shutdown];
+    
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+  
+    [self.delegate callControllerDidFinish];
+}
 
-    [self.navigationController popViewControllerAnimated:YES];
+- (void)started
+{
+    NSError *error;
+    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video], @"command" : [NSNumber numberWithInt:Started]};
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json options:0 error:&error];
+    NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSLog(@"send %d bytes", (int)jsonStr.length);
+    [PubNub sendMessage:jsonStr toChannel:_outChannel];
+}
+
+- (IBAction)endCall:(UIBarButtonItem*)sender
+{
+    NSError *error;
+    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video], @"command" : [NSNumber numberWithInt:Stop]};
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json options:0 error:&error];
+    NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSLog(@"send %d bytes", (int)jsonStr.length);
+    [PubNub sendMessage:jsonStr toChannel:_outChannel];
+
+    [self finish];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -162,9 +213,36 @@
 
 - (void)encoder:(VTEncoder*)encoder encodedData:(NSData*)data
 {
-    NSString *dataStr = [data base64EncodedStringWithOptions:kNilOptions];
-    NSLog(@"send %d bytes", (int)dataStr.length);
-    [PubNub sendMessage:dataStr toChannel:_outChannel];
+    NSDictionary *json;
+    if (!self.decoderIsOpened) {
+        CGSize sz;
+        if (_aspectRatio <= 1.) {
+            sz.width = _peerView.frame.size.width;
+            sz.height = _peerView.frame.size.width * _aspectRatio;
+        } else {
+            sz.height = _peerView.frame.size.height;
+            sz.width = _peerView.frame.size.height / _aspectRatio;
+        }
+        NSDictionary *params = @{@"width" : [NSNumber numberWithInt:sz.width],
+                                 @"height" : [NSNumber numberWithInt:sz.height],
+                                 @"sps" : [_encoder.sps base64EncodedStringWithOptions:kNilOptions],
+                                 @"pps" : [_encoder.pps base64EncodedStringWithOptions:kNilOptions]};
+        json = @{@"media" : [NSNumber numberWithInt:Video],
+                 @"command" : [NSNumber numberWithInt:Start],
+                 @"data" : params};
+    } else {
+        json = @{@"media" : [NSNumber numberWithInt:Video],
+                 @"command" : [NSNumber numberWithInt:Data],
+                 @"data" : [data base64EncodedStringWithOptions:kNilOptions]};
+    }
+    
+    NSError *error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:json options:0 error:&error];
+    if (!error) {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSLog(@"send %d bytes", (int)jsonString.length);
+        [PubNub sendMessage:jsonString toChannel:_outChannel];
+    }
 }
 
 #pragma mark - VTDeccoder delegare

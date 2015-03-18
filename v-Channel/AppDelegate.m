@@ -81,7 +81,7 @@
     _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
     if (application.applicationState == UIApplicationStateActive) {
         if (_incommingUser) {
-            if ([_contactsController.activeCall.peer.userId isEqual:_incommingUser.userId]) {
+            if (_contactsController.activeCall && [_contactsController.activeCall.peer.userId isEqual:_incommingUser.userId]) {
                 [_contactsController.activeCall accept];
             } else {
                 [_contactsController performSegueWithIdentifier:@"Call" sender:_incommingUser];

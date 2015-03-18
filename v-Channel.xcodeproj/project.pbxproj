@@ -61,7 +61,6 @@
 		2CE410601AB782C800234135 /* tmp-9.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410481AB782C800234135 /* tmp-9.gif */; };
 		2CE410661AB788A400234135 /* busy.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410621AB788A400234135 /* busy.wav */; };
 		2CE410671AB788A400234135 /* calling.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410631AB788A400234135 /* calling.wav */; };
-		2CE410681AB788A400234135 /* end_of_call.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410641AB788A400234135 /* end_of_call.wav */; };
 		2CE410691AB788A400234135 /* ringtone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410651AB788A400234135 /* ringtone.wav */; };
 		666173EA6A30380262846827 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 009ACA1DC0EEF368381BB266 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -140,7 +139,6 @@
 		2CE410481AB782C800234135 /* tmp-9.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "tmp-9.gif"; sourceTree = "<group>"; };
 		2CE410621AB788A400234135 /* busy.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = busy.wav; sourceTree = "<group>"; };
 		2CE410631AB788A400234135 /* calling.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = calling.wav; sourceTree = "<group>"; };
-		2CE410641AB788A400234135 /* end_of_call.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = end_of_call.wav; sourceTree = "<group>"; };
 		2CE410651AB788A400234135 /* ringtone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ringtone.wav; sourceTree = "<group>"; };
 		4709844339A5F1D177F671A8 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		877D9DAD7638C40F1CD0945B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -326,7 +324,6 @@
 			children = (
 				2CE410621AB788A400234135 /* busy.wav */,
 				2CE410631AB788A400234135 /* calling.wav */,
-				2CE410641AB788A400234135 /* end_of_call.wav */,
 				2CE410651AB788A400234135 /* ringtone.wav */,
 			);
 			path = sounds;
@@ -408,7 +405,6 @@
 				2CE4105A1AB782C800234135 /* tmp-3.gif in Resources */,
 				2CB7953E1AB5F66000B982C9 /* Images.xcassets in Resources */,
 				2CE410661AB788A400234135 /* busy.wav in Resources */,
-				2CE410681AB788A400234135 /* end_of_call.wav in Resources */,
 				2CE410561AB782C800234135 /* tmp-20.gif in Resources */,
 				2CE4104F1AB782C800234135 /* tmp-14.gif in Resources */,
 				2CE410691AB788A400234135 /* ringtone.wav in Resources */,

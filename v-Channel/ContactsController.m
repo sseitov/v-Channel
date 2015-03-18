@@ -10,8 +10,9 @@
 #import <Parse/Parse.h>
 #import "Storage.h"
 #import "MBProgressHUD.h"
+#import "AppDelegate.h"
 
-@interface ContactsController () <NSFetchedResultsControllerDelegate>
+@interface ContactsController () <NSFetchedResultsControllerDelegate, CallControllerDelegate>
 
 @property (strong, nonatomic) PFUser* currentUser;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
@@ -146,6 +147,7 @@
     if ([[segue identifier] isEqualToString:@"Call"]) {
         UINavigationController *vc = [segue destinationViewController];
         _activeCall = (CallController*)vc.topViewController;
+        _activeCall.delegate = self;
         
         if ([sender isKindOfClass:[UITableViewCell class]]) {
             UITableViewCell* cell = sender;
@@ -158,6 +160,16 @@
             _activeCall.fromMe = NO;
         }
     }
+}
+
+- (void)callControllerDidFinish
+{
+    if ([AppDelegate isPad]) {
+        [self.activeCall.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self.activeCall.navigationController popToRootViewControllerAnimated:YES];
+    }
+    self.activeCall = nil;
 }
 
 @end
