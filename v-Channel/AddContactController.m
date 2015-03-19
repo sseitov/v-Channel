@@ -8,7 +8,6 @@
 
 #import "AddContactController.h"
 #import <Parse/Parse.h>
-#import "Storage.h"
 
 @interface AddContactController () <UITextFieldDelegate>
 
@@ -79,7 +78,6 @@
 
 - (IBAction)addFriend:(UIButton *)sender
 {
-    [[Storage sharedInstance] addContact:_friend.username withNickName:_friend[@"displayName"] photo:_friend[@"photo"]];
     [self done];
 }
 

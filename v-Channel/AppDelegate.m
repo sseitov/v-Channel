@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
-#import "Storage.h"
 #import "ContactsController.h"
 
 NSString* const PushCommandNotification = @"PushCommandNotification";
@@ -18,9 +17,6 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 @property (atomic) BOOL disconnectedOnNetworkError;
 @property (weak, nonatomic) ContactsController *contactsController;
-
-@property (strong, nonatomic) Contact* incommingUser;
-@property (nonatomic) NSNumber *pushCommand;
 
 @end
 
@@ -38,8 +34,6 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [[Storage sharedInstance] saveContext];
-    
     [Parse setApplicationId:@"OEMz45lHZDfdEN9SMWjCPF3AQ49QSzWVikdtazFK"
                   clientKey:@"uw7xs5HqWHmVJMMyCj1Ub8PKCfi486CwOH2nzy5z"];
     [PFFacebookUtils initializeFacebook];
@@ -74,7 +68,8 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
+    [PFPush handlePush:userInfo];
+/*    _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
     if (_incommingUser) {
         if (application.applicationState == UIApplicationStateActive) {
             [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
@@ -86,7 +81,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
             _pushCommand = [userInfo objectForKey:@"command"];
             [PFPush handlePush:userInfo];
         }
-    }
+    }*/
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -99,13 +94,14 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+/*
     if (_incommingUser && _pushCommand) {
         [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
                                                             object:_incommingUser
                                                           userInfo:@{ @"command" : _pushCommand}];
     }
     _incommingUser = nil;
-    _pushCommand = nil;
+    _pushCommand = nil;*/
 }
 
 - (BOOL)application:(UIApplication *)application

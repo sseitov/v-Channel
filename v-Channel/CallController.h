@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Storage.h"
+#import <Parse/Parse.h>
 
 @protocol CallControllerDelegate <NSObject>
 
@@ -18,8 +18,7 @@
 @interface CallController : UIViewController
 
 @property (weak, nonatomic) id<CallControllerDelegate> delegate;
-
-@property (strong, nonatomic) Contact *peer;
+@property (strong, nonatomic) PFUser *peer;
 @property (nonatomic) BOOL incommingCall;
 
 - (void)accept;

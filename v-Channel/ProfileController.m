@@ -11,7 +11,6 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 
-#import "Storage.h"
 #import "MBProgressHUD.h"
 
 @interface ProfileController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UITextFieldDelegate>
@@ -41,6 +40,9 @@
                                                                                               target:self
                                                                                               action:@selector(goBack)];
     }
+    _profileImage.hidden = YES;
+    _displayName.hidden = YES;
+    _updateButton.hidden = YES;
     [self updateUI];
 }
 
@@ -71,6 +73,9 @@
         } else {
             _profileImage.image = [UIImage imageWithData:user[@"photo"]];
         }
+        _profileImage.hidden = NO;
+        _displayName.hidden = NO;
+        _updateButton.hidden = NO;
     }
 }
 

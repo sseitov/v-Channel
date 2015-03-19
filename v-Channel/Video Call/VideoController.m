@@ -53,7 +53,7 @@ enum Command {
 {
     [super viewDidLoad];
     
-    self.title = _peer.displayName ? _peer.displayName : _peer.userId;
+    self.title = _peer[@"displayName"];
     
     [[Camera shared] startup];
     _captureQueue = dispatch_queue_create("com.vchannel.VideoCall", DISPATCH_QUEUE_SERIAL);

@@ -26,10 +26,7 @@
 		2CE410091AB6F8BD00234135 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */; };
 		2CE4100B1AB6F8DA00234135 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */; };
 		2CE4100D1AB6F95100234135 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100C1AB6F95100234135 /* libz.dylib */; };
-		2CE410111AB6FB9B00234135 /* Storage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410101AB6FB9B00234135 /* Storage.m */; };
 		2CE410181AB71DBF00234135 /* AddContactController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410171AB71DBF00234135 /* AddContactController.m */; };
-		2CE4101B1AB7413E00234135 /* ContactModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */; };
-		2CE4101E1AB7425200234135 /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4101D1AB7425200234135 /* Contact.m */; };
 		2CE410271AB7628100234135 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410261AB7628100234135 /* Social.framework */; };
 		2CE4102B1AB7636200234135 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4102A1AB7636200234135 /* Accounts.framework */; };
 		2CE4102F1AB76D6D00234135 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4102E1AB76D6D00234135 /* CallController.m */; };
@@ -95,13 +92,8 @@
 		2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		2CE4100C1AB6F95100234135 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		2CE4100F1AB6FB9B00234135 /* Storage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Storage.h; sourceTree = "<group>"; };
-		2CE410101AB6FB9B00234135 /* Storage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Storage.m; sourceTree = "<group>"; };
 		2CE410161AB71DBF00234135 /* AddContactController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddContactController.h; sourceTree = "<group>"; };
 		2CE410171AB71DBF00234135 /* AddContactController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddContactController.m; sourceTree = "<group>"; };
-		2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ContactModel.xcdatamodel; sourceTree = "<group>"; };
-		2CE4101C1AB7425200234135 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
-		2CE4101D1AB7425200234135 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
 		2CE410261AB7628100234135 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		2CE410281AB762A900234135 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2CE4102A1AB7636200234135 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -189,7 +181,6 @@
 		2CB7952F1AB5F66000B982C9 /* v-Channel */ = {
 			isa = PBXGroup;
 			children = (
-				2CE4100E1AB6FB7E00234135 /* Storage */,
 				2CB795571AB5F9BD00B982C9 /* Video Call */,
 				2CB7956F1AB6205100B982C9 /* ContactsController.h */,
 				2CB795701AB6205100B982C9 /* ContactsController.m */,
@@ -262,18 +253,6 @@
 				2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */,
 			);
 			name = "Additional Frameworks";
-			sourceTree = "<group>";
-		};
-		2CE4100E1AB6FB7E00234135 /* Storage */ = {
-			isa = PBXGroup;
-			children = (
-				2CE4100F1AB6FB9B00234135 /* Storage.h */,
-				2CE410101AB6FB9B00234135 /* Storage.m */,
-				2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */,
-				2CE4101C1AB7425200234135 /* Contact.h */,
-				2CE4101D1AB7425200234135 /* Contact.m */,
-			);
-			name = Storage;
 			sourceTree = "<group>";
 		};
 		2CE410301AB782C800234135 /* animation */ = {
@@ -457,12 +436,9 @@
 				2CB795651AB5F9D100B982C9 /* Camera.m in Sources */,
 				2CB795711AB6205100B982C9 /* ContactsController.m in Sources */,
 				2CE410181AB71DBF00234135 /* AddContactController.m in Sources */,
-				2CE410111AB6FB9B00234135 /* Storage.m in Sources */,
 				2CB795361AB5F66000B982C9 /* AppDelegate.m in Sources */,
 				2CB795331AB5F66000B982C9 /* main.m in Sources */,
 				2CB795641AB5F9D100B982C9 /* VideoController.m in Sources */,
-				2CE4101E1AB7425200234135 /* Contact.m in Sources */,
-				2CE4101B1AB7413E00234135 /* ContactModel.xcdatamodeld in Sources */,
 				2CB795671AB5F9D100B982C9 /* VideoLayerView.m in Sources */,
 				2CB795681AB5F9D100B982C9 /* VTDecoder.m in Sources */,
 				2CB795661AB5F9D100B982C9 /* DragView.m in Sources */,
@@ -629,19 +605,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		2CE410191AB7413E00234135 /* ContactModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */,
-			);
-			currentVersion = 2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */;
-			path = ContactModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 2CB795251AB5F66000B982C9 /* Project object */;
 }

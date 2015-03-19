@@ -9,7 +9,6 @@
 #import "CallController.h"
 #import "AppDelegate.h"
 #import <AVFoundation/AVFoundation.h>
-#import "Storage.h"
 #import "VideoController.h"
 
 @interface CallController ()
@@ -34,13 +33,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (_peer.displayName) {
-        self.title = _peer.displayName;
+    if (_peer[@"displayName"]) {
+        self.title = _peer[@"displayName"];
     } else {
-        self.title = _peer.userId;
+        self.title = _peer.username;
     }
-    if (_peer.photo) {
-        _photo.image = [UIImage imageWithData:_peer.photo];
+    if (_peer[@"photo"]) {
+        _photo.image = [UIImage imageWithData:_peer[@"photo"]];
         _photo.layer.cornerRadius = _photo.frame.size.width/2;
         _photo.clipsToBounds = YES;
     }
@@ -141,13 +140,13 @@
 - (IBAction)call:(UIButton*)sender
 {
     if (_doCall) {
-        [AppDelegate pushCommand:FinishCall toUser:_peer.userId];
+        [AppDelegate pushCommand:FinishCall toUser:_peer[@"userId"]];
         [_ringtone stop];
         [sender setTitle:@"Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
         [_animation stopAnimating];
     } else {
-        [AppDelegate pushCommand:Call toUser:_peer.userId];
+        [AppDelegate pushCommand:Call toUser:_peer[@"userId"]];
         _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"calling" withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = -1;
         if ([_ringtone prepareToPlay]) {
@@ -162,7 +161,7 @@
 
 - (IBAction)acceptIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:AcceptCall toUser:_peer.userId];
+    [AppDelegate pushCommand:AcceptCall toUser:_peer[@"userId"]];
     [_ringtone stop];
     [_animation stopAnimating];
     _doCall = NO;
@@ -172,7 +171,7 @@
 
 - (IBAction)rejectIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:RejectCall toUser:_peer.userId];
+    [AppDelegate pushCommand:RejectCall toUser:_peer[@"userId"]];
     [_ringtone stop];
     [_animation stopAnimating];
     _incommingCall = NO;
