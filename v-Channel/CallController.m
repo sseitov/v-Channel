@@ -16,8 +16,13 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *photo;
 @property (weak, nonatomic) IBOutlet UIImageView *animation;
+@property (weak, nonatomic) IBOutlet UIButton *acceptButton;
+@property (weak, nonatomic) IBOutlet UIButton *rejectButton;
+@property (weak, nonatomic) IBOutlet UIButton *callButton;
 
-- (IBAction)call:(UIBarButtonItem*)sender;
+- (IBAction)call:(UIButton*)sender;
+- (IBAction)acceptIncomming:(UIButton *)sender;
+- (IBAction)rejectIncomming:(UIButton *)sender;
 
 @property (nonatomic) BOOL doCall;
 @property (strong, nonatomic) AVAudioPlayer *ringtone;
@@ -50,9 +55,22 @@
         NSString* name = [NSString stringWithFormat:@"tmp-%d.gif", i];
         [gifs addObject:[UIImage imageNamed:name]];
     }
+    _animation.image = [UIImage imageNamed:@"tmp-0.gif"];
     _animation.animationImages = gifs;
     _animation.animationDuration = 2.0f;
     _animation.animationRepeatCount = 0;
+    
+    [self prepareButton:_acceptButton];
+    [self prepareButton:_rejectButton];
+    [self prepareButton:_callButton];
+}
+
+- (void)prepareButton:(UIButton*)button
+{
+    button.layer.borderWidth = 1.0;
+    button.layer.masksToBounds = YES;
+    button.layer.cornerRadius = 7.0;
+    button.layer.borderColor = button.backgroundColor.CGColor;
 }
 
 - (void)done
@@ -60,52 +78,106 @@
     [self.delegate callControllerDidFinish];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    _acceptButton.hidden = YES;
+    _rejectButton.hidden = YES;
+    _callButton.hidden = YES;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (!_fromMe) {
-        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ringtone" withExtension:@"wav"] error:nil];
+    [self updateGUI];
+}
+
+- (void)updateGUI
+{
+    if (_incommingCall) {
+        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ringtone"
+                                                                                         withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = -1;
         if ([_ringtone prepareToPlay]) {
             [_ringtone play];
         }
         [_animation startAnimating];
+        _acceptButton.hidden = NO;
+        _rejectButton.hidden = NO;
+        _callButton.hidden = YES;
+    } else {
+        _acceptButton.hidden = YES;
+        _rejectButton.hidden = YES;
+        _callButton.hidden = NO;
     }
+}
+
+- (void)setIncommingCall
+{
+    _incommingCall = YES;
+    [self updateGUI];
 }
 
 - (void)accept
 {
-    if (_fromMe) {
-        [_ringtone stop];
-        [self performSegueWithIdentifier:@"Video" sender:self];
-    }
+    [_ringtone stop];
+    [_animation stopAnimating];
+    _doCall = NO;
+    [self performSegueWithIdentifier:@"Video" sender:self];
 }
 
-- (IBAction)call:(UIBarButtonItem*)sender
+- (void)reject
+{
+    [_ringtone stop];
+    _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
+                                                                                     withExtension:@"wav"] error:nil];
+    _ringtone.numberOfLoops = 0;
+    if ([_ringtone prepareToPlay]) {
+        [_ringtone play];
+    }
+    [_animation stopAnimating];
+    _doCall = NO;
+    [self updateGUI];
+}
+
+- (IBAction)call:(UIButton*)sender
 {
     if (_doCall) {
+        [AppDelegate pushCommand:FinishCall toUser:_peer.userId];
         [_ringtone stop];
-        sender.image = [UIImage imageNamed:@"call"];
+        [sender setTitle:@"Call" forState:UIControlStateNormal];
+        sender.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
         [_animation stopAnimating];
-        _doCall = NO;
     } else {
-        if (_fromMe) {
-            [[AppDelegate sharedInstance] pushMessageToUser:_peer.userId];
-            _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"calling" withExtension:@"wav"] error:nil];
-            _ringtone.numberOfLoops = -1;
-            if ([_ringtone prepareToPlay]) {
-                [_ringtone play];
-            }
-            
-            sender.image = [UIImage imageNamed:@"end-call"];
-            [_animation startAnimating];
-            _doCall = YES;
-        } else {
-            [_ringtone stop];
-            [[AppDelegate sharedInstance] pushMessageToUser:_peer.userId];
-            [self performSegueWithIdentifier:@"Video" sender:self];
-            _doCall = NO;
+        [AppDelegate pushCommand:Call toUser:_peer.userId];
+        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"calling" withExtension:@"wav"] error:nil];
+        _ringtone.numberOfLoops = -1;
+        if ([_ringtone prepareToPlay]) {
+            [_ringtone play];
         }
+        [sender setTitle:@"End Call" forState:UIControlStateNormal];
+        sender.backgroundColor = [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
+        [_animation startAnimating];
     }
+    _doCall = !_doCall;
+}
+
+- (IBAction)acceptIncomming:(UIButton *)sender
+{
+    [AppDelegate pushCommand:AcceptCall toUser:_peer.userId];
+    [_ringtone stop];
+    [_animation stopAnimating];
+    _doCall = NO;
+    _incommingCall = NO;
+    [self performSegueWithIdentifier:@"Video" sender:self];
+}
+
+- (IBAction)rejectIncomming:(UIButton *)sender
+{
+    [AppDelegate pushCommand:RejectCall toUser:_peer.userId];
+    [_ringtone stop];
+    [_animation stopAnimating];
+    _incommingCall = NO;
+    _doCall = NO;
+    [self updateGUI];
 }
 
 
@@ -115,8 +187,6 @@
         VideoController *vc = [segue destinationViewController];
         vc.peer = self.peer;
         vc.delegate = self.delegate;
-        _fromMe = YES;
-        [_animation stopAnimating];
     }
 }
 

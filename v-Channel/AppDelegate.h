@@ -8,6 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
+enum PushCommand
+{
+    None,
+    Call,
+    AcceptCall,
+    RejectCall,
+    FinishCall
+};
+
+extern NSString* const PushCommandNotification;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -15,8 +26,7 @@
 
 + (BOOL)isPad;
 + (AppDelegate*)sharedInstance;
-
-- (void)pushMessageToUser:(NSString*)user;
++ (void)pushCommand:(enum PushCommand)command toUser:(NSString*)user;
 
 @end
 

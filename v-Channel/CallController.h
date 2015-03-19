@@ -20,8 +20,10 @@
 @property (weak, nonatomic) id<CallControllerDelegate> delegate;
 
 @property (strong, nonatomic) Contact *peer;
-@property (nonatomic) BOOL fromMe;
+@property (nonatomic) BOOL incommingCall;
 
 - (void)accept;
+- (void)reject;
+- (void)setIncommingCall;
 
 @end

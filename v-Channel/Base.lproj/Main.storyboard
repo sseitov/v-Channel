@@ -334,36 +334,87 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="K6e-6H-RN3">
                                 <rect key="frame" x="200" y="100" width="200" height="200"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="VIg-I6-Na9"/>
-                                    <constraint firstAttribute="height" constant="200" id="yLz-yA-STT"/>
+                                    <constraint firstAttribute="width" constant="200" id="EnI-gP-I8F"/>
+                                    <constraint firstAttribute="height" constant="200" id="bb6-RQ-Psy"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CeH-J0-R9F">
                                 <rect key="frame" x="238" y="320" width="125" height="75"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="75" id="hed-6F-d8h"/>
-                                    <constraint firstAttribute="width" constant="125" id="liS-ik-syn"/>
+                                    <constraint firstAttribute="width" constant="125" id="VyE-7G-1dH"/>
+                                    <constraint firstAttribute="height" constant="75" id="zjf-Wi-8kg"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ykH-GW-nFe">
+                                <rect key="frame" x="196" y="403" width="100" height="44"/>
+                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="pr5-eV-7Q7"/>
+                                    <constraint firstAttribute="height" constant="44" id="xBw-fW-UuN"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Accept">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="acceptIncomming:" destination="Iyr-Wq-0bo" eventType="touchUpInside" id="k7G-wC-NJL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Ki-j1-e59">
+                                <rect key="frame" x="304" y="403" width="100" height="44"/>
+                                <color key="backgroundColor" red="1" green="0.40000000600000002" blue="0.40000000600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="kaw-bW-j8e"/>
+                                    <constraint firstAttribute="width" constant="100" id="uJ7-6Y-cbm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Reject">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="rejectIncomming:" destination="Iyr-Wq-0bo" eventType="touchUpInside" id="43q-yr-1Hx"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myh-Or-sMY">
+                                <rect key="frame" x="250" y="403" width="100" height="44"/>
+                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="4ZE-Il-RM2"/>
+                                    <constraint firstAttribute="width" constant="100" id="ewJ-of-bNU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Call">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="call:" destination="Iyr-Wq-0bo" eventType="touchUpInside" id="1W1-Bo-Urb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="CeH-J0-R9F" firstAttribute="top" secondItem="K6e-6H-RN3" secondAttribute="bottom" constant="20" id="GZ2-h2-8Pg"/>
-                            <constraint firstItem="K6e-6H-RN3" firstAttribute="top" secondItem="KNg-OW-Fda" secondAttribute="bottom" constant="36" id="Nrd-Dj-z8s"/>
-                            <constraint firstAttribute="centerX" secondItem="CeH-J0-R9F" secondAttribute="centerX" id="Tfe-CT-F6L"/>
-                            <constraint firstAttribute="centerX" secondItem="K6e-6H-RN3" secondAttribute="centerX" id="hp4-OK-etA"/>
+                            <constraint firstAttribute="centerX" secondItem="CeH-J0-R9F" secondAttribute="centerX" id="DpI-dE-XCh"/>
+                            <constraint firstAttribute="centerX" secondItem="3Ki-j1-e59" secondAttribute="centerX" constant="-54" id="Dzs-AF-hlT"/>
+                            <constraint firstItem="Myh-Or-sMY" firstAttribute="top" secondItem="CeH-J0-R9F" secondAttribute="bottom" constant="8" id="O5E-lf-ZJr"/>
+                            <constraint firstItem="CeH-J0-R9F" firstAttribute="top" secondItem="K6e-6H-RN3" secondAttribute="bottom" constant="20" id="RQW-Nz-cqA"/>
+                            <constraint firstItem="3Ki-j1-e59" firstAttribute="top" secondItem="CeH-J0-R9F" secondAttribute="bottom" constant="8" id="WPE-8u-ssL"/>
+                            <constraint firstItem="K6e-6H-RN3" firstAttribute="top" secondItem="KNg-OW-Fda" secondAttribute="bottom" constant="36" id="cHh-gK-Jpx"/>
+                            <constraint firstAttribute="centerX" secondItem="K6e-6H-RN3" secondAttribute="centerX" id="cfq-q7-OIC"/>
+                            <constraint firstAttribute="centerX" secondItem="Myh-Or-sMY" secondAttribute="centerX" id="qJL-j3-JfV"/>
+                            <constraint firstAttribute="centerX" secondItem="ykH-GW-nFe" secondAttribute="centerX" constant="54" id="rwe-bd-HyP"/>
+                            <constraint firstItem="ykH-GW-nFe" firstAttribute="top" secondItem="CeH-J0-R9F" secondAttribute="bottom" constant="8" id="udT-Mw-i5Z"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="y0J-Ma-bVl">
-                        <barButtonItem key="rightBarButtonItem" image="call" id="ZSw-NH-Qx6">
-                            <connections>
-                                <action selector="call:" destination="Iyr-Wq-0bo" id="XSy-ph-yVa"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="y0J-Ma-bVl"/>
                     <connections>
+                        <outlet property="acceptButton" destination="ykH-GW-nFe" id="ffr-T9-APf"/>
                         <outlet property="animation" destination="CeH-J0-R9F" id="NGh-Aa-84s"/>
+                        <outlet property="callButton" destination="Myh-Or-sMY" id="qm4-bX-ZKS"/>
                         <outlet property="photo" destination="K6e-6H-RN3" id="Hlo-WA-8Nd"/>
+                        <outlet property="rejectButton" destination="3Ki-j1-e59" id="CGs-hF-oBB"/>
                         <segue destination="mTv-Ql-Adn" kind="show" identifier="Video" id="MT6-OY-Vy0"/>
                     </connections>
                 </viewController>
@@ -429,7 +480,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="call" width="28" height="28"/>
         <image name="end-call" width="28" height="28"/>
         <image name="person" width="200" height="200"/>
         <image name="settings" width="22" height="22"/>

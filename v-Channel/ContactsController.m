@@ -24,6 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePushCommand:) name:PushCommandNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -154,10 +155,10 @@
             NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             _activeCall.peer = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-            _activeCall.fromMe = YES;
+            _activeCall.incommingCall = NO;
         } else {
             _activeCall.peer = sender;
-            _activeCall.fromMe = NO;
+            _activeCall.incommingCall = YES;
         }
     }
 }
@@ -169,7 +170,41 @@
     } else {
         [self.activeCall.navigationController popToRootViewControllerAnimated:YES];
     }
+    [AppDelegate pushCommand:FinishCall toUser:_activeCall.peer.userId];
     self.activeCall = nil;
+}
+
+- (void)handlePushCommand:(NSNotification*)notify
+{
+    Contact* user = notify.object;
+    enum PushCommand command = [[notify.userInfo objectForKey:@"command"] intValue];
+    switch (command) {
+        case Call:
+            if (_activeCall && [_activeCall.peer.userId isEqual:user.userId]) {
+                [_activeCall setIncommingCall];
+            } else {
+                [self performSegueWithIdentifier:@"Call" sender:user];
+            }
+            break;
+        case AcceptCall:
+            if (_activeCall && [_activeCall.peer.userId isEqual:user.userId]) {
+                [_activeCall accept];
+            }
+            break;
+        case RejectCall:
+            if (_activeCall && [_activeCall.peer.userId isEqual:user.userId]) {
+                [_activeCall reject];
+            }
+            break;
+        case FinishCall:
+            if (_activeCall && [_activeCall.peer.userId isEqual:user.userId]) {
+                NSLog(@"%@ finish call", user.userId);
+                [self callControllerDidFinish];
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 @end

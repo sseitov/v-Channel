@@ -9,14 +9,17 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import "Storage.h"
-#import "PNImports.h"
 #import "ContactsController.h"
 
-@interface AppDelegate () <UISplitViewControllerDelegate, PNDelegate>
+NSString* const PushCommandNotification = @"PushCommandNotification";
+
+@interface AppDelegate () <UISplitViewControllerDelegate>
 
 @property (atomic) BOOL disconnectedOnNetworkError;
 @property (weak, nonatomic) ContactsController *contactsController;
+
 @property (strong, nonatomic) Contact* incommingUser;
+@property (nonatomic) NSNumber *pushCommand;
 
 @end
 
@@ -35,15 +38,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[Storage sharedInstance] saveContext];
-
-    [PubNub setDelegate:self];
-    
-    PNConfiguration *myConfig = [PNConfiguration configurationForOrigin:@"pubsub.pubnub.com"
-                                                             publishKey:@"pub-c-70195c96-4cf2-441c-8674-2d1e9d8eefaf"
-                                                           subscribeKey:@"sub-c-5ef2db96-cbad-11e4-91c8-02ee2ddab7fe"
-                                                              secretKey:@"sec-c-YzMwNDNhNjQtNDI2My00ZjJjLTliODgtMTc3N2I2Y2NlMGJi"];
-    [PubNub setConfiguration:myConfig];
-    [PubNub connect];
     
     [Parse setApplicationId:@"OEMz45lHZDfdEN9SMWjCPF3AQ49QSzWVikdtazFK"
                   clientKey:@"uw7xs5HqWHmVJMMyCj1Ub8PKCfi486CwOH2nzy5z"];
@@ -63,7 +57,7 @@
     _splitViewController.delegate = self;
     
     UINavigationController *master = _splitViewController.viewControllers[0];
-    _contactsController = master.topViewController;
+    _contactsController = (ContactsController*)master.topViewController;
     
     return YES;
 }
@@ -79,16 +73,17 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
-    if (application.applicationState == UIApplicationStateActive) {
-        if (_incommingUser) {
-            if (_contactsController.activeCall && [_contactsController.activeCall.peer.userId isEqual:_incommingUser.userId]) {
-                [_contactsController.activeCall accept];
-            } else {
-                [_contactsController performSegueWithIdentifier:@"Call" sender:_incommingUser];
-            }
+    if (_incommingUser) {
+        if (application.applicationState == UIApplicationStateActive) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
+                                                                object:_incommingUser
+                                                              userInfo:@{ @"command" : [userInfo objectForKey:@"command"]}];
+            _incommingUser = nil;
+            _pushCommand = nil;
+        } else {
+            _pushCommand = [userInfo objectForKey:@"command"];
+            [PFPush handlePush:userInfo];
         }
-    } else {
-        [PFPush handlePush:userInfo];
     }
 }
 
@@ -102,6 +97,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    if (_incommingUser && _pushCommand) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
+                                                            object:_incommingUser
+                                                          userInfo:@{ @"command" : _pushCommand}];
+    }
+    _incommingUser = nil;
+    _pushCommand = nil;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -115,7 +117,6 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    [PubNub disconnect];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +154,7 @@
 
 #pragma mark - Push notifications
 
-- (void)pushMessageToUser:(NSString*)user
++ (void)pushCommand:(enum PushCommand)command toUser:(NSString*)user
 {
     // Build a query to match user
     PFQuery *query = [PFUser query];
@@ -162,39 +163,12 @@
     NSDictionary *data = @{@"alert" : message,
                            @"badge" : @"Increment",
                            @"sound": @"default",
-                           @"user" : [Storage getLogin]};
+                           @"user" : [Storage getLogin],
+                           @"command" : [NSNumber numberWithInt:command]};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];
     [push setData:data];
     [push sendPushInBackground];
-}
-
-#pragma mark - PubNub delegate
-
-- (void)pubnubClient:(PubNub *)client willConnectToOrigin:(NSString *)origin
-{
-    NSString *message = [NSString stringWithFormat:@"PubNub client is about to connect to PubNub origin at: %@", origin];
-    if (self.disconnectedOnNetworkError) {
-        
-        message = [NSString stringWithFormat:@"PubNub client trying to restore connection to PubNub origin at: %@", origin];
-    }
-    
-    NSLog(@"%@", message);
-}
-
-- (void)pubnubClient:(PubNub *)client didConnectToOrigin:(NSString *)origin
-{
-    NSLog(@"DELEGATE: Connected to  origin: %@", origin);
-}
-
-- (void)pubnubClient:(PubNub *)client connectionDidFailWithError:(PNError *)error
-{
-    NSLog(@"#1 PubNub client was unable to connect because of error: %@", error);
-    self.disconnectedOnNetworkError = error.code == kPNClientConnectionFailedOnInternetFailureError;
-}
-
-- (void)pubnubClient:(PubNub *)client didReceiveMessage:(PNMessage *)message
-{
 }
 
 @end
