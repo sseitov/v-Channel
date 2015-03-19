@@ -22,8 +22,6 @@
 		2CB7956E1AB6075700B982C9 /* default.css in Resources */ = {isa = PBXBuildFile; fileRef = 2CB7956D1AB6075700B982C9 /* default.css */; };
 		2CB795711AB6205100B982C9 /* ContactsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CB795701AB6205100B982C9 /* ContactsController.m */; };
 		2CE40FD41AB6E76200234135 /* ProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE40FD31AB6E76200234135 /* ProfileController.m */; };
-		2CE410041AB6F6A500234135 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410021AB6F6A500234135 /* Bolts.framework */; };
-		2CE410051AB6F6A500234135 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410031AB6F6A500234135 /* Parse.framework */; };
 		2CE410071AB6F86E00234135 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410061AB6F86E00234135 /* libsqlite3.dylib */; };
 		2CE410091AB6F8BD00234135 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */; };
 		2CE4100B1AB6F8DA00234135 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */; };
@@ -93,8 +91,6 @@
 		2CB795701AB6205100B982C9 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
 		2CE40FD21AB6E76200234135 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		2CE40FD31AB6E76200234135 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
-		2CE410021AB6F6A500234135 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = /Users/sseitov/Documents/SDK/parse/Bolts.framework; sourceTree = "<absolute>"; };
-		2CE410031AB6F6A500234135 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = /Users/sseitov/Documents/SDK/parse/Parse.framework; sourceTree = "<absolute>"; };
 		2CE410061AB6F86E00234135 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -106,8 +102,6 @@
 		2CE4101A1AB7413E00234135 /* ContactModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ContactModel.xcdatamodel; sourceTree = "<group>"; };
 		2CE4101C1AB7425200234135 /* Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
 		2CE4101D1AB7425200234135 /* Contact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
-		2CE410221AB761EB00234135 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseUI.framework; path = /Users/sseitov/Documents/SDK/parse/ParseUI.framework; sourceTree = "<absolute>"; };
-		2CE410241AB7620F00234135 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseFacebookUtils.framework; path = /Users/sseitov/Documents/SDK/parse/ParseFacebookUtils.framework; sourceTree = "<absolute>"; };
 		2CE410261AB7628100234135 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		2CE410281AB762A900234135 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2CE4102A1AB7636200234135 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -156,8 +150,6 @@
 				2CE410071AB6F86E00234135 /* libsqlite3.dylib in Frameworks */,
 				2CE4100B1AB6F8DA00234135 /* MobileCoreServices.framework in Frameworks */,
 				2CE410091AB6F8BD00234135 /* SystemConfiguration.framework in Frameworks */,
-				2CE410041AB6F6A500234135 /* Bolts.framework in Frameworks */,
-				2CE410051AB6F6A500234135 /* Parse.framework in Frameworks */,
 				2CB7956B1AB606E600B982C9 /* PixateFreestyle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,10 +257,6 @@
 				2CE4102A1AB7636200234135 /* Accounts.framework */,
 				2CE410281AB762A900234135 /* StoreKit.framework */,
 				2CE410261AB7628100234135 /* Social.framework */,
-				2CE410241AB7620F00234135 /* ParseFacebookUtils.framework */,
-				2CE410221AB761EB00234135 /* ParseUI.framework */,
-				2CE410021AB6F6A500234135 /* Bolts.framework */,
-				2CE410031AB6F6A500234135 /* Parse.framework */,
 				2CB7956A1AB606E600B982C9 /* PixateFreestyle.framework */,
 				2CE4100A1AB6F8DA00234135 /* MobileCoreServices.framework */,
 				2CE410081AB6F8BD00234135 /* SystemConfiguration.framework */,
@@ -593,6 +581,7 @@
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
 					/Users/sseitov/Documents/SDK/parse,
+					/Users/sseitov/Documents/FacebookSDK,
 				);
 				INFOPLIST_FILE = "v-Channel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -610,6 +599,7 @@
 					"$(inherited)",
 					/Users/sseitov/Documents/SDK/PixateFreestyle,
 					/Users/sseitov/Documents/SDK/parse,
+					/Users/sseitov/Documents/FacebookSDK,
 				);
 				INFOPLIST_FILE = "v-Channel/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

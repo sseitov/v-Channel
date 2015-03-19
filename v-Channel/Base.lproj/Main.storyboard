@@ -197,93 +197,57 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="exC-jR-5eT">
-                                <rect key="frame" x="200" y="80" width="200" height="200"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="VOw-ct-z70">
+                                <rect key="frame" x="200" y="100" width="200" height="200"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="VBd-Uq-Iay"/>
-                                    <constraint firstAttribute="height" constant="200" id="veA-Ws-EgA"/>
+                                    <constraint firstAttribute="height" constant="200" id="AMk-43-JzV"/>
+                                    <constraint firstAttribute="width" constant="200" id="pmT-bV-fDM"/>
                                 </constraints>
-                                <state key="normal" image="person">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="changeLogo:" destination="AzN-m4-t0l" eventType="touchUpInside" id="hXS-ca-OHe"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e-mail" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MLu-N1-ukD">
-                                <rect key="frame" x="160" y="300" width="280" height="30"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Display Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JYg-sX-jbN">
+                                <rect key="frame" x="200" y="320" width="200" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="7jf-HU-vYx"/>
-                                    <constraint firstAttribute="width" constant="280" id="Hu8-UJ-ErX"/>
+                                    <constraint firstAttribute="width" constant="200" id="LX7-I3-417"/>
+                                    <constraint firstAttribute="height" constant="30" id="qE8-xz-XE2"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" returnKeyType="done"/>
                                 <connections>
-                                    <outlet property="delegate" destination="AzN-m4-t0l" id="JUQ-aF-ic4"/>
+                                    <outlet property="delegate" destination="AzN-m4-t0l" id="8fB-4m-1aF"/>
                                 </connections>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bXc-qL-hPX">
-                                <rect key="frame" x="220" y="338" width="160" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SNP-UR-I83">
+                                <rect key="frame" x="200" y="380" width="200" height="44"/>
+                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="160" id="45R-Sb-HXT"/>
-                                    <constraint firstAttribute="height" constant="30" id="FR7-Ty-8s4"/>
+                                    <constraint firstAttribute="height" constant="44" id="8Cd-Wc-JYl"/>
+                                    <constraint firstAttribute="width" constant="200" id="xbK-Sl-IDD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
-                                <connections>
-                                    <outlet property="delegate" destination="AzN-m4-t0l" id="ToU-Ty-VqC"/>
-                                </connections>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="display name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gIg-mZ-Xiq">
-                                <rect key="frame" x="200" y="376" width="200" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="Hbo-2Z-RwY"/>
-                                    <constraint firstAttribute="height" constant="30" id="pXF-gv-qGH"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
-                                <connections>
-                                    <outlet property="delegate" destination="AzN-m4-t0l" id="iFg-T2-PvT"/>
-                                </connections>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SX2-R3-23h">
-                                <rect key="frame" x="200" y="420" width="200" height="44"/>
-                                <color key="backgroundColor" red="0.16470588235294117" green="0.50196078431372548" blue="0.32549019607843138" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="egt-4H-lEf"/>
-                                    <constraint firstAttribute="width" constant="200" id="lbF-wN-ANd"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                <state key="normal" title="SignUp">
+                                <state key="normal" title="Update">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="signUp:" destination="AzN-m4-t0l" eventType="touchUpInside" id="YBO-T0-4JB"/>
+                                    <action selector="updateProfile:" destination="AzN-m4-t0l" eventType="touchUpInside" id="rRP-zX-l9r"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="MLu-N1-ukD" firstAttribute="top" secondItem="exC-jR-5eT" secondAttribute="bottom" constant="20" id="7Kb-de-dFk"/>
-                            <constraint firstItem="gIg-mZ-Xiq" firstAttribute="top" secondItem="bXc-qL-hPX" secondAttribute="bottom" constant="8" id="9nB-qT-bbY"/>
-                            <constraint firstAttribute="centerX" secondItem="bXc-qL-hPX" secondAttribute="centerX" id="CTK-Tj-gxY"/>
-                            <constraint firstItem="exC-jR-5eT" firstAttribute="top" secondItem="M0N-nL-7mI" secondAttribute="bottom" constant="16" id="Dgf-36-gAA"/>
-                            <constraint firstAttribute="centerX" secondItem="MLu-N1-ukD" secondAttribute="centerX" id="FWE-e0-94z"/>
-                            <constraint firstAttribute="centerX" secondItem="gIg-mZ-Xiq" secondAttribute="centerX" id="Rmt-tN-2uF"/>
-                            <constraint firstAttribute="centerX" secondItem="exC-jR-5eT" secondAttribute="centerX" id="a3l-hz-vPU"/>
-                            <constraint firstItem="bXc-qL-hPX" firstAttribute="top" secondItem="MLu-N1-ukD" secondAttribute="bottom" constant="8" id="r2H-vG-v4d"/>
-                            <constraint firstAttribute="centerX" secondItem="SX2-R3-23h" secondAttribute="centerX" id="u7Q-3X-NKb"/>
-                            <constraint firstItem="SX2-R3-23h" firstAttribute="top" secondItem="gIg-mZ-Xiq" secondAttribute="bottom" constant="14" id="zSf-og-AmJ"/>
+                            <constraint firstItem="SNP-UR-I83" firstAttribute="top" secondItem="JYg-sX-jbN" secondAttribute="bottom" constant="30" id="QYu-qh-f5g"/>
+                            <constraint firstAttribute="centerX" secondItem="JYg-sX-jbN" secondAttribute="centerX" id="YAF-Yf-i1e"/>
+                            <constraint firstAttribute="centerX" secondItem="VOw-ct-z70" secondAttribute="centerX" id="dpT-9W-fQH"/>
+                            <constraint firstAttribute="centerX" secondItem="SNP-UR-I83" secondAttribute="centerX" id="pWD-3a-aib"/>
+                            <constraint firstItem="JYg-sX-jbN" firstAttribute="top" secondItem="VOw-ct-z70" secondAttribute="bottom" constant="20" id="tHB-ql-Mmd"/>
+                            <constraint firstItem="VOw-ct-z70" firstAttribute="top" secondItem="M0N-nL-7mI" secondAttribute="bottom" constant="36" id="tTE-x5-Fbd"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="My Profile" id="ojM-IV-5Z4"/>
                     <connections>
-                        <outlet property="displayName" destination="gIg-mZ-Xiq" id="1HA-ar-X6A"/>
-                        <outlet property="login" destination="MLu-N1-ukD" id="Qws-b4-TL4"/>
-                        <outlet property="logoButton" destination="exC-jR-5eT" id="yOd-WH-Qg8"/>
-                        <outlet property="password" destination="bXc-qL-hPX" id="QXG-uS-kqN"/>
-                        <outlet property="signUpButton" destination="SX2-R3-23h" id="Ybg-Hm-WfY"/>
+                        <outlet property="displayName" destination="JYg-sX-jbN" id="qu3-Tw-lXY"/>
+                        <outlet property="profileImage" destination="VOw-ct-z70" id="xIJ-xj-RX8"/>
+                        <outlet property="updateButton" destination="SNP-UR-I83" id="OLb-O8-vu7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="30k-Fi-hUz" userLabel="First Responder" sceneMemberID="firstResponder"/>

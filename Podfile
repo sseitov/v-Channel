@@ -1,2 +1,5 @@
 pod 'MBProgressHUD', '~> 0.9.1'
 pod 'IQKeyboardManager'
+pod 'Parse', '~> 1.4'
+pod 'ParseFacebookUtils', '~> 1.4'
+pod 'Facebook-iOS-SDK', '~> 3.19'

@@ -20,10 +20,4 @@
 - (void)deleteContact:(Contact*)contact;
 - (Contact*)contactForUser:(NSString*)user;
 
-+ (NSString*)getLogin;
-+ (NSString*)getPassword;
-
-+ (void)saveLogin:(NSString*)login;
-+ (void)savePassword:(NSString*)password;
-
 @end

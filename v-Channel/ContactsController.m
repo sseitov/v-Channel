@@ -8,6 +8,8 @@
 
 #import "ContactsController.h"
 #import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+
 #import "Storage.h"
 #import "MBProgressHUD.h"
 #import "AppDelegate.h"
@@ -36,18 +38,23 @@
 {
     _currentUser = [PFUser currentUser];
     if (!_currentUser) {
+        // Set permissions required from the facebook user account
+        NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships"];        
+        // Login PFUser using Facebook
+        [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES]; // Hide loading indicator
+            
+            if (!user) {
+                [self performSegueWithIdentifier:@"Profile" sender:self];
+            } else {
+                self.navigationItem.rightBarButtonItem.enabled = YES;
+                [PFInstallation currentInstallation][@"userId"] = user.username;
+                _currentUser = user;
+                [_currentUser save];
+            }
+        }];
+        
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        [PFUser logInWithUsernameInBackground:[Storage getLogin] password:[Storage getPassword]
-                                        block:^(PFUser *user, NSError *error) {
-                                            [MBProgressHUD hideHUDForView:self.view animated:YES];
-                                            if (user) {
-                                                self.navigationItem.rightBarButtonItem.enabled = YES;
-                                                _currentUser = user;
-                                                [_currentUser save];
-                                            } else {
-                                                [self performSegueWithIdentifier:@"Profile" sender:self];
-                                            }
-                                        }];
     }
 }
 

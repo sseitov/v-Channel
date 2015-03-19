@@ -214,30 +214,4 @@
     return [[self.managedObjectContext executeFetchRequest:request error:&error] firstObject];
 }
 
-#pragma mark - User Defaults
-
-+ (NSString*)getLogin
-{
-    NSString *login = [[NSUserDefaults standardUserDefaults] objectForKey:@"login"];
-    return login ? login : @"";
-}
-
-+ (NSString*)getPassword
-{
-    NSString *password = [[NSUserDefaults standardUserDefaults] objectForKey:@"password"];
-    return password ? password : @"";
-}
-
-+ (void)saveLogin:(NSString*)login
-{
-    [[NSUserDefaults standardUserDefaults] setObject:login forKey:@"login"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-+ (void)savePassword:(NSString*)password
-{
-    [[NSUserDefaults standardUserDefaults] setObject:password forKey:@"password"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 @end

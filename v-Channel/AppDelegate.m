@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "Storage.h"
 #import "ContactsController.h"
 
@@ -41,6 +42,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     
     [Parse setApplicationId:@"OEMz45lHZDfdEN9SMWjCPF3AQ49QSzWVikdtazFK"
                   clientKey:@"uw7xs5HqWHmVJMMyCj1Ub8PKCfi486CwOH2nzy5z"];
+    [PFFacebookUtils initializeFacebook];
     
     // Register for Push Notitications
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
@@ -106,8 +108,17 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     _pushCommand = nil;
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication withSession:[PFFacebookUtils session]];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = 0;
@@ -117,6 +128,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    [[PFFacebookUtils session] close];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,11 +171,11 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     // Build a query to match user
     PFQuery *query = [PFUser query];
     [query whereKey:@"userId" equalTo:user];
-    NSString *message = [NSString stringWithFormat:@"Incomming call from %@", [Storage getLogin]];
+    NSString *message = [NSString stringWithFormat:@"Incomming call from %@", [PFUser currentUser].username];
     NSDictionary *data = @{@"alert" : message,
                            @"badge" : @"Increment",
                            @"sound": @"default",
-                           @"user" : [Storage getLogin],
+                           @"user" : [PFUser currentUser].username,
                            @"command" : [NSNumber numberWithInt:command]};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];

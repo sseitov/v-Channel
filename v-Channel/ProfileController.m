@@ -9,21 +9,17 @@
 #import "ProfileController.h"
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+
 #import "Storage.h"
 #import "MBProgressHUD.h"
 
 @interface ProfileController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIActionSheetDelegate, UITextFieldDelegate>
-
-@property (weak, nonatomic) IBOutlet UIButton *logoButton;
-@property (weak, nonatomic) IBOutlet UIButton *signUpButton;
-@property (strong, nonatomic) UIImageView *profileImage;
-@property (weak, nonatomic) IBOutlet UITextField *login;
-@property (weak, nonatomic) IBOutlet UITextField *password;
+@property (weak, nonatomic) IBOutlet UIImageView *profileImage;
 @property (weak, nonatomic) IBOutlet UITextField *displayName;
+@property (weak, nonatomic) IBOutlet UIButton *updateButton;
 
-- (IBAction)changeLogo:(UIButton *)sender;
-- (IBAction)signUp:(UIButton *)sender;
-
+- (IBAction)updateProfile:(UIButton *)sender;
 @end
 
 @implementation ProfileController
@@ -32,14 +28,13 @@
 {
     [super viewDidLoad];
     
-    _profileImage = [[UIImageView alloc] initWithFrame:_logoButton.bounds];
     _profileImage.layer.cornerRadius = _profileImage.frame.size.width/2;
     _profileImage.clipsToBounds = YES;
     
-    _signUpButton.layer.borderWidth = 1.0;
-    _signUpButton.layer.masksToBounds = YES;
-    _signUpButton.layer.cornerRadius = 7.0;
-    _signUpButton.layer.borderColor = _signUpButton.backgroundColor.CGColor;
+    _updateButton.layer.borderWidth = 1.0;
+    _updateButton.layer.masksToBounds = YES;
+    _updateButton.layer.cornerRadius = 7.0;
+    _updateButton.layer.borderColor = _updateButton.backgroundColor.CGColor;
     
     if (![AppDelegate isPad]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -58,16 +53,24 @@
 {
     if ([PFUser currentUser]) {
         PFUser* user = [PFUser currentUser];
-        _login.text = user.username;
-        _login.enabled = NO;
-        _password.enabled = NO;
         _displayName.text = user[@"displayName"];
-        NSData* photoData = user[@"photo"];
-        if (photoData) {
-            _profileImage.image = [UIImage imageWithData:photoData];
-            [_logoButton addSubview:_profileImage];
+        if (!user[@"photo"]) {
+            FBRequest *request = [FBRequest requestForMe];
+            [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                if (!error) {
+                    // result is a dictionary with the user's Facebook data
+                    NSDictionary *userData = (NSDictionary *)result;
+                    NSString *facebookID = userData[@"id"];
+                    NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+                    NSData *picture = [NSData dataWithContentsOfURL:pictureURL];
+                    if (picture) {
+                        _profileImage.image = [UIImage imageWithData:picture];
+                    }
+                }
+            }];
+        } else {
+            _profileImage.image = [UIImage imageWithData:user[@"photo"]];
         }
-        [_signUpButton setTitle:@"Update" forState:UIControlStateNormal];
     }
 }
 
@@ -159,10 +162,6 @@
                                    toResolution:128];
         dispatch_async(dispatch_get_main_queue(), ^{
             _profileImage.image = imageToSave;
-            if (_profileImage.superview) {
-                [_profileImage removeFromSuperview];
-            }
-            [_logoButton addSubview:_profileImage];
         });
     });
 }
@@ -175,76 +174,11 @@
 
 #pragma mark - SignUp
 
-- (void)errorLogin
+- (IBAction)updateProfile:(UIButton *)sender
 {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error signup"
-                                                    message:@"Check your login, may be this login already exists"
-                                                   delegate:nil
-                                          cancelButtonTitle:@"Ok"
-                                          otherButtonTitles:nil, nil];
-    [alert show];
+    PFUser* user = [PFUser currentUser];
+    user[@"displayName"] = _displayName.text;
+    user[@"photo"] = UIImageJPEGRepresentation(_profileImage.image, .5);
+    [user saveInBackground];
 }
-
-- (void)createNewUserWithLogin:(NSString*)login password:(NSString*)password
-{
-    PFUser* user = [PFUser user];
-    user.username = login;
-    user.password = password;
-    user.email = login;
-    if (!user.username || !user.password) {
-        [self errorLogin];
-        return;
-    }
-    if (_displayName.text) {
-        user[@"displayName"] = _displayName.text;
-    }
-    if (_profileImage.image) {
-        NSData *photo = UIImageJPEGRepresentation(_profileImage.image, .5);
-        user[@"photo"] = photo;
-    }
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        if (!error) {
-            [user saveInBackground];
-            [PFInstallation currentInstallation][@"userId"] = _login.text;
-            [[PFInstallation currentInstallation] saveInBackground];
-            [Storage saveLogin:_login.text];
-            [Storage savePassword:_password.text];
-            [self updateUI];
-        } else {
-            NSString *errorString = [error userInfo][@"error"];
-            NSLog(@"%@", errorString);
-            [self errorLogin];
-        }
-    }];
-}
-
-- (IBAction)signUp:(UIButton *)sender
-{
-    if ([PFUser currentUser]) {
-        PFUser* user = [PFUser currentUser];
-        user[@"displayName"] = _displayName.text;
-        if (_profileImage.image) {
-            NSData *photo = UIImageJPEGRepresentation(_profileImage.image, .5);
-            user[@"photo"] = photo;
-        }
-        [user saveInBackground];
-    } else {
-        if (!_login.text || !_password.text) {
-            [self errorLogin];
-            return;
-        }
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        [PFUser logInWithUsernameInBackground:_login.text password:_password.text block:^(PFUser *user, NSError *error) {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            if (user) {
-                [self updateUI];
-            } else {
-                [self createNewUserWithLogin:_login.text password:_password.text];
-            }
-        }];
-    }
-}
-
 @end
