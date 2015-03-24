@@ -15,8 +15,7 @@
 
 @interface ContactsController () <CallControllerDelegate>
 
-@property (strong, nonatomic) PFUser* currentUser;
-@property (strong, nonatomic) NSMutableArray *friends;
+@property (strong, nonatomic) NSMutableArray *channels;
 
 @end
 
@@ -25,7 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _friends = [NSMutableArray new];
+    _channels = [NSMutableArray new];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePushCommand:) name:PushCommandNotification object:nil];
 }
 
@@ -36,15 +35,16 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    _currentUser = [PFUser currentUser];
-    if (!_currentUser) {
-        // Set permissions required from the facebook user account
-        NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships"];        
+    // Set permissions required from the facebook user account
+    NSArray *permissionsArray = @[ @"user_about_me", @"email"];
+    
+    if (![PFUser currentUser]) {
+        
         // Login PFUser using Facebook
-        [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-            [MBProgressHUD hideHUDForView:self.view animated:YES]; // Hide loading indicator
-            
+        [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error)
+        {
             if (!user) {
+                [MBProgressHUD hideHUDForView:self.view animated:YES]; // Hide loading indicator
                 NSString *errorMessage = nil;
                 if (!error) {
                     errorMessage = @"The user cancelled the Facebook login.";
@@ -58,52 +58,63 @@
                                                       otherButtonTitles:@"Dismiss", nil];
                 [alert show];
             } else {
-                [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+                [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error)
+                {
+                    [MBProgressHUD hideHUDForView:self.view animated:YES]; // Hide loading indicator
                     if (!error) {
+                        NSLog(@"fb result: %@", result);
+
                         // Store the current user's Facebook ID on the user
-                        [[PFUser currentUser] setObject:[result objectForKey:@"id"]
-                                                 forKey:@"fbId"];
+                        [[PFUser currentUser] setObject:[result objectForKey:@"id"] forKey:@"fbId"];
+                        [[PFUser currentUser] setObject:[result objectForKey:@"email"] forKey:@"email"];
                         [[PFUser currentUser] saveInBackground];
-                        [self updateFriendList];
+                        [PFInstallation currentInstallation][@"userId"] = [result objectForKey:@"email"];
+                        [[PFInstallation currentInstallation] saveInBackground];
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                    } else {
+                        NSLog(@"facebook error");
                     }
                 }];
-                self.navigationItem.rightBarButtonItem.enabled = YES;
-                [PFInstallation currentInstallation][@"userId"] = user.username;
-                _currentUser = user;
-                [_currentUser save];
             }
         }];
-        
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    } else {
+        [self uploadChannels];
     }
 }
 
-- (void)updateFriendList
+- (void)uploadChannels
 {
-    // Issue a Facebook Graph API request to get your user's friend list
-    [FBRequestConnection startForMyFriendsWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // result will contain an array with your user's friends in the "data" key
-            NSArray *friendObjects = [result objectForKey:@"data"];
-            NSMutableArray *friendIds = [NSMutableArray arrayWithCapacity:friendObjects.count];
-            // Create a list of friends' Facebook IDs
-            for (NSDictionary *friendObject in friendObjects) {
-                [friendIds addObject:[friendObject objectForKey:@"id"]];
+    [_channels removeAllObjects];
+    for (NSString* email in [PFUser currentUser][@"channels"]) {
+        PFQuery *query = [PFUser query];
+        [query whereKey:@"email" equalTo:email];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError* error) {
+            if (!error) {
+                PFUser* channel =  [objects firstObject];
+                if (channel) {
+                    [_channels addObject:channel];
+                    [self.tableView reloadData];
+                }
             }
-            
-            // Construct a PFUser query that will find friends whose facebook ids
-            // are contained in the current user's friend list.
-            PFQuery *friendQuery = [PFUser query];
-            [friendQuery whereKey:@"fbId" containedIn:friendIds];
-            
-            // findObjects will return a list of PFUsers that are friends
-            // with the current user
-            NSArray *friendUsers = [friendQuery findObjects];
-            [_friends removeAllObjects];
-            [_friends addObjectsFromArray:friendUsers];
-            [self.tableView reloadData];
+        }];
+    }
+}
+
+- (void)saveChannels
+{
+    [PFUser currentUser][@"channels"] = [_channels valueForKey:@"email"];
+    [[PFUser currentUser] saveInBackground];
+}
+
+- (PFUser*)findChannel:(NSString*)channel
+{
+    for (PFUser *user in _channels) {
+        if ([user[@"email"] isEqual:channel]) {
+            return user;
         }
-    }];
+    }
+    return nil;
 }
 
 #pragma mark - Table view data source
@@ -115,13 +126,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _friends.count;
+    return _channels.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Contact" forIndexPath:indexPath];
-    PFUser *contact = [_friends objectAtIndex:indexPath.row];
+    PFUser *contact = [_channels objectAtIndex:indexPath.row];
 
     UILabel* name = (UILabel*)[cell.contentView viewWithTag:2];
     name.text = contact[@"displayName"];
@@ -135,7 +146,7 @@
     }
     return cell;
 }
-/*
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return YES;
@@ -144,11 +155,12 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        Contact *contact = [self.fetchedResultsController objectAtIndexPath:indexPath];
-        [[Storage sharedInstance] deleteContact:contact];
+        [_channels removeObjectAtIndex:indexPath.row];
+        [self saveChannels];
+        [self.tableView reloadData];
     }
 }
-*/
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -162,7 +174,7 @@
             UITableViewCell* cell = sender;
             NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-            _activeCall.peer = [_friends objectAtIndex:indexPath.row];
+            _activeCall.peer = [_channels objectAtIndex:indexPath.row];
             _activeCall.incommingCall = NO;
         } else {
             _activeCall.peer = sender;
@@ -178,34 +190,36 @@
     } else {
         [self.activeCall.navigationController popToRootViewControllerAnimated:YES];
     }
-    [AppDelegate pushCommand:FinishCall toUser:_activeCall.peer[@"userId"]];
-    self.activeCall = nil;
+    [AppDelegate pushCommand:FinishCall toUser:_activeCall.peer[@"email"]];
 }
 
 - (void)handlePushCommand:(NSNotification*)notify
 {
-    PFUser* user = notify.object;
+    PFUser *user = [self findChannel:notify.object];
+    if (!user) {
+        return;
+    }
     enum PushCommand command = [[notify.userInfo objectForKey:@"command"] intValue];
     switch (command) {
         case Call:
-            if (_activeCall && [_activeCall.peer[@"userId"] isEqual:user[@"userId"]]) {
+            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
                 [_activeCall setIncommingCall];
             } else {
                 [self performSegueWithIdentifier:@"Call" sender:user];
             }
             break;
         case AcceptCall:
-            if (_activeCall && [_activeCall.peer[@"userId"] isEqual:user[@"userId"]]) {
+            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
                 [_activeCall accept];
             }
             break;
         case RejectCall:
-            if (_activeCall && [_activeCall.peer[@"userId"] isEqual:user[@"userId"]]) {
+            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
                 [_activeCall reject];
             }
             break;
         case FinishCall:
-            if (_activeCall && [_activeCall.peer[@"userId"] isEqual:user[@"userId"]]) {
+            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
                 [self callControllerDidFinish];
             }
             break;

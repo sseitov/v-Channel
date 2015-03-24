@@ -9,14 +9,10 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
-#import "ContactsController.h"
 
 NSString* const PushCommandNotification = @"PushCommandNotification";
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
-
-@property (atomic) BOOL disconnectedOnNetworkError;
-@property (weak, nonatomic) ContactsController *contactsController;
 
 @end
 
@@ -52,9 +48,6 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     _splitViewController.presentsWithGesture = NO;
     _splitViewController.delegate = self;
     
-    UINavigationController *master = _splitViewController.viewControllers[0];
-    _contactsController = (ContactsController*)master.topViewController;
-    
     return YES;
 }
 
@@ -68,20 +61,19 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    [PFPush handlePush:userInfo];
-/*    _incommingUser = [[Storage sharedInstance] contactForUser:[userInfo objectForKey:@"user"]];
-    if (_incommingUser) {
-        if (application.applicationState == UIApplicationStateActive) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
-                                                                object:_incommingUser
-                                                              userInfo:@{ @"command" : [userInfo objectForKey:@"command"]}];
-            _incommingUser = nil;
-            _pushCommand = nil;
-        } else {
-            _pushCommand = [userInfo objectForKey:@"command"];
+    if (application.applicationState == UIApplicationStateActive) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
+                                                            object:[userInfo objectForKey:@"user"]
+                                                          userInfo:@{ @"command" : [userInfo objectForKey:@"command"]}];
+    } else {
+        enum PushCommand command = [[userInfo objectForKey:@"command"] intValue];
+        if (command == Call) {
+            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+            [currentInstallation setChannels:@[[userInfo objectForKey:@"user"]]];
+            [currentInstallation saveInBackground];
             [PFPush handlePush:userInfo];
         }
-    }*/
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -94,14 +86,6 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-/*
-    if (_incommingUser && _pushCommand) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
-                                                            object:_incommingUser
-                                                          userInfo:@{ @"command" : _pushCommand}];
-    }
-    _incommingUser = nil;
-    _pushCommand = nil;*/
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -119,6 +103,15 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = 0;
         [currentInstallation saveEventually];
+    }
+    
+    NSString* user = [currentInstallation.channels firstObject];
+    if (user) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
+                                                            object:user
+                                                          userInfo:@{ @"command" : [NSNumber numberWithInt:Call]}];
+        [currentInstallation setChannels:@[]];
+        [currentInstallation saveInBackground];
     }
 }
 
@@ -167,11 +160,11 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     // Build a query to match user
     PFQuery *query = [PFUser query];
     [query whereKey:@"userId" equalTo:user];
-    NSString *message = [NSString stringWithFormat:@"Incomming call from %@", [PFUser currentUser].username];
+    NSString *message = [NSString stringWithFormat:@"Incomming call from %@", [PFUser currentUser][@"email"]];
     NSDictionary *data = @{@"alert" : message,
                            @"badge" : @"Increment",
                            @"sound": @"default",
-                           @"user" : [PFUser currentUser].username,
+                           @"user" : [PFUser currentUser][@"email"],
                            @"command" : [NSNumber numberWithInt:command]};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];

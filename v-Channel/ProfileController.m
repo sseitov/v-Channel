@@ -53,15 +53,20 @@
 
 - (void)updateUI
 {
-    if ([PFUser currentUser]) {
-        PFUser* user = [PFUser currentUser];
-        _displayName.text = user[@"displayName"];
-        if (!user[@"photo"]) {
-            FBRequest *request = [FBRequest requestForMe];
-            [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-                if (!error) {
-                    // result is a dictionary with the user's Facebook data
-                    NSDictionary *userData = (NSDictionary *)result;
+    PFUser* user = [PFUser currentUser];
+    if (user) {
+        if (user[@"photo"]) {
+            _profileImage.image = [UIImage imageWithData:user[@"photo"]];
+        }
+        if (user[@"displayName"]) {
+            _displayName.text = user[@"displayName"];
+        }
+        FBRequest *request = [FBRequest requestForMe];
+        [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                // result is a dictionary with the user's Facebook data
+                NSDictionary *userData = (NSDictionary *)result;
+                if (!user[@"photo"]) {
                     NSString *facebookID = userData[@"id"];
                     NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
                     NSData *picture = [NSData dataWithContentsOfURL:pictureURL];
@@ -69,10 +74,11 @@
                         _profileImage.image = [UIImage imageWithData:picture];
                     }
                 }
-            }];
-        } else {
-            _profileImage.image = [UIImage imageWithData:user[@"photo"]];
-        }
+                if (!user[@"displayName"]) {
+                    _displayName.text = userData[@"name"];
+                }
+            }
+        }];
         _profileImage.hidden = NO;
         _displayName.hidden = NO;
         _updateButton.hidden = NO;

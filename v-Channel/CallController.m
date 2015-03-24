@@ -74,7 +74,11 @@
 
 - (void)done
 {
-    [self.delegate callControllerDidFinish];
+    if ([AppDelegate isPad]) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -106,6 +110,11 @@
         _acceptButton.hidden = YES;
         _rejectButton.hidden = YES;
         _callButton.hidden = NO;
+        
+        [_animation stopAnimating];
+        [_callButton setTitle:@"Call" forState:UIControlStateNormal];
+        _callButton.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
+        _doCall = NO;
     }
 }
 
@@ -118,35 +127,34 @@
 - (void)accept
 {
     [_ringtone stop];
-    [_animation stopAnimating];
-    _doCall = NO;
+    _incommingCall = NO;
+    [self updateGUI];
     [self performSegueWithIdentifier:@"Video" sender:self];
 }
 
 - (void)reject
 {
     [_ringtone stop];
+    _incommingCall = NO;
     _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
                                                                                      withExtension:@"wav"] error:nil];
     _ringtone.numberOfLoops = 0;
     if ([_ringtone prepareToPlay]) {
         [_ringtone play];
     }
-    [_animation stopAnimating];
-    _doCall = NO;
     [self updateGUI];
 }
 
 - (IBAction)call:(UIButton*)sender
 {
     if (_doCall) {
-        [AppDelegate pushCommand:FinishCall toUser:_peer[@"userId"]];
+        [AppDelegate pushCommand:FinishCall toUser:_peer[@"email"]];
         [_ringtone stop];
         [sender setTitle:@"Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
         [_animation stopAnimating];
     } else {
-        [AppDelegate pushCommand:Call toUser:_peer[@"userId"]];
+        [AppDelegate pushCommand:Call toUser:_peer[@"email"]];
         _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"calling" withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = -1;
         if ([_ringtone prepareToPlay]) {
@@ -161,7 +169,7 @@
 
 - (IBAction)acceptIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:AcceptCall toUser:_peer[@"userId"]];
+    [AppDelegate pushCommand:AcceptCall toUser:_peer[@"email"]];
     [_ringtone stop];
     [_animation stopAnimating];
     _doCall = NO;
@@ -171,7 +179,7 @@
 
 - (IBAction)rejectIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:RejectCall toUser:_peer[@"userId"]];
+    [AppDelegate pushCommand:RejectCall toUser:_peer[@"email"]];
     [_ringtone stop];
     [_animation stopAnimating];
     _incommingCall = NO;

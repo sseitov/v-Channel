@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tF3-Rv-1TS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tF3-Rv-1TS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--v-Channel-->
+        <!--My Channels-->
         <scene sceneID="G2d-Ot-Hc1">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="EAK-lN-vvt" customClass="ContactsController" sceneMemberID="viewController">
@@ -52,15 +52,15 @@
                             <outlet property="delegate" destination="EAK-lN-vvt" id="yXT-mg-LAz"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="v-Channel" id="xx9-FS-jTz">
+                    <navigationItem key="navigationItem" title="My Channels" id="xx9-FS-jTz">
                         <barButtonItem key="leftBarButtonItem" image="settings" id="uzM-aV-upW">
                             <connections>
                                 <segue destination="dqJ-1T-EiW" kind="showDetail" identifier="Profile" id="pEg-zE-Ccq"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3FI-rv-VXV">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="qQw-Ag-YvQ">
                             <connections>
-                                <segue destination="QGm-ss-N9I" kind="show" id="yFe-1G-nHG"/>
+                                <segue destination="nBx-05-cQv" kind="show" identifier="AddChannel" id="i5e-8d-oBB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -68,90 +68,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sWz-bt-NN5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1040" y="245"/>
-        </scene>
-        <!--Add Contact Controller-->
-        <scene sceneID="lOe-3Q-Zwx">
-            <objects>
-                <viewController id="QGm-ss-N9I" customClass="AddContactController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="8v2-zq-zms"/>
-                        <viewControllerLayoutGuide type="bottom" id="WY2-k7-2PB"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="wrc-lG-UVR">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="ZA3-G4-uxY">
-                                <rect key="frame" x="200" y="72" width="200" height="200"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="UPa-KP-b8B"/>
-                                    <constraint firstAttribute="width" constant="200" id="txS-Kc-2o1"/>
-                                </constraints>
-                            </imageView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e-mail" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="D47-M2-Qe4">
-                                <rect key="frame" x="200" y="318" width="200" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="8BF-qJ-j4g"/>
-                                    <constraint firstAttribute="width" constant="200" id="RYM-0q-l5c"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="search"/>
-                                <connections>
-                                    <outlet property="delegate" destination="QGm-ss-N9I" id="By7-cV-SgV"/>
-                                </connections>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ak4-ZM-x9S">
-                                <rect key="frame" x="200" y="289" width="200" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="59i-cJ-KAn"/>
-                                    <constraint firstAttribute="width" constant="200" id="DzU-u8-oL5"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xd0-R4-dwM">
-                                <rect key="frame" x="200" y="380" width="200" height="44"/>
-                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="98x-7L-pzB"/>
-                                    <constraint firstAttribute="height" constant="44" id="ie8-vC-6T8"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
-                                <state key="normal" title="Add Friend">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="addFriend:" destination="QGm-ss-N9I" eventType="touchUpInside" id="5dp-YZ-qCc"/>
-                                    <action selector="signUp:" destination="AzN-m4-t0l" eventType="touchUpInside" id="r2x-pq-h9w"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="Xd0-R4-dwM" firstAttribute="top" secondItem="D47-M2-Qe4" secondAttribute="bottom" constant="32" id="DSO-21-lUj"/>
-                            <constraint firstItem="ZA3-G4-uxY" firstAttribute="top" secondItem="8v2-zq-zms" secondAttribute="bottom" constant="8" id="PIz-Ic-6cW"/>
-                            <constraint firstAttribute="centerX" secondItem="ZA3-G4-uxY" secondAttribute="centerX" id="RpP-ZG-BGP"/>
-                            <constraint firstItem="D47-M2-Qe4" firstAttribute="top" secondItem="Ak4-ZM-x9S" secondAttribute="bottom" constant="8" id="UIB-Kc-74p"/>
-                            <constraint firstItem="Ak4-ZM-x9S" firstAttribute="top" secondItem="ZA3-G4-uxY" secondAttribute="bottom" constant="17" id="cRb-IV-PRC"/>
-                            <constraint firstAttribute="centerX" secondItem="Ak4-ZM-x9S" secondAttribute="centerX" id="fVU-xF-W2y"/>
-                            <constraint firstAttribute="centerX" secondItem="D47-M2-Qe4" secondAttribute="centerX" id="hu8-YM-iuG"/>
-                            <constraint firstAttribute="centerX" secondItem="Xd0-R4-dwM" secondAttribute="centerX" id="n8t-aX-V7i"/>
-                        </constraints>
-                    </view>
-                    <toolbarItems/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="addFriendButton" destination="Xd0-R4-dwM" id="rAQ-Fj-APm"/>
-                        <outlet property="nick" destination="Ak4-ZM-x9S" id="XEh-k6-iaR"/>
-                        <outlet property="photo" destination="ZA3-G4-uxY" id="MIs-YI-bC1"/>
-                        <outlet property="user" destination="D47-M2-Qe4" id="ed6-pG-2bX"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4ml-qi-LxY" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1040" y="1013"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fWE-Ea-dFJ">
@@ -254,6 +170,87 @@
             </objects>
             <point key="canvasLocation" x="-370" y="1722"/>
         </scene>
+        <!--Add Channel Controller-->
+        <scene sceneID="nSv-fs-a1m">
+            <objects>
+                <viewController id="nBx-05-cQv" customClass="AddChannelController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yHS-o9-46M"/>
+                        <viewControllerLayoutGuide type="bottom" id="oOw-Sq-Su0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="KRY-pK-Yva">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person" translatesAutoresizingMaskIntoConstraints="NO" id="pY9-52-SxJ">
+                                <rect key="frame" x="200" y="100" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="L5d-sN-Xjo"/>
+                                    <constraint firstAttribute="height" constant="200" id="sjE-gG-rSJ"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fRv-aH-MxA">
+                                <rect key="frame" x="200" y="308" width="200" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="3gP-ek-J1c"/>
+                                    <constraint firstAttribute="height" constant="21" id="jDX-xz-3hJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="user email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="JJe-B4-qva">
+                                <rect key="frame" x="200" y="337" width="200" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="MMN-EQ-cyc"/>
+                                    <constraint firstAttribute="width" constant="200" id="jWR-hm-XGQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="search"/>
+                                <connections>
+                                    <outlet property="delegate" destination="nBx-05-cQv" id="Ahi-dP-DRZ"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nQf-Af-qnX">
+                                <rect key="frame" x="200" y="375" width="200" height="44"/>
+                                <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="idu-4v-sIu"/>
+                                    <constraint firstAttribute="height" constant="44" id="lbu-Ih-mfQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="Add Channel">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addFriend:" destination="nBx-05-cQv" eventType="touchUpInside" id="YYj-Co-dw3"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="JJe-B4-qva" secondAttribute="centerX" id="CWg-IG-Ca6"/>
+                            <constraint firstItem="pY9-52-SxJ" firstAttribute="top" secondItem="yHS-o9-46M" secondAttribute="bottom" constant="36" id="F19-nP-FS0"/>
+                            <constraint firstItem="JJe-B4-qva" firstAttribute="top" secondItem="fRv-aH-MxA" secondAttribute="bottom" constant="8" id="U04-1w-Dh7"/>
+                            <constraint firstAttribute="centerX" secondItem="fRv-aH-MxA" secondAttribute="centerX" id="YAe-TZ-YJm"/>
+                            <constraint firstItem="nQf-Af-qnX" firstAttribute="top" secondItem="JJe-B4-qva" secondAttribute="bottom" constant="8" id="Zds-Jo-afJ"/>
+                            <constraint firstAttribute="centerX" secondItem="nQf-Af-qnX" secondAttribute="centerX" id="g3O-ZI-hbk"/>
+                            <constraint firstItem="fRv-aH-MxA" firstAttribute="top" secondItem="pY9-52-SxJ" secondAttribute="bottom" constant="8" id="iM3-xH-9jf"/>
+                            <constraint firstAttribute="centerX" secondItem="pY9-52-SxJ" secondAttribute="centerX" id="o6h-rY-Oe6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="addFriendButton" destination="nQf-Af-qnX" id="te3-ir-NNL"/>
+                        <outlet property="nick" destination="fRv-aH-MxA" id="3hb-df-LVB"/>
+                        <outlet property="photo" destination="pY9-52-SxJ" id="OKp-h2-voD"/>
+                        <outlet property="user" destination="JJe-B4-qva" id="qlX-xb-s3t"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gzf-dV-det" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1793" y="-466"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="jq1-hm-LsA">
             <objects>
@@ -342,11 +339,11 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myh-Or-sMY">
-                                <rect key="frame" x="250" y="403" width="100" height="44"/>
+                                <rect key="frame" x="201" y="403" width="199" height="44"/>
                                 <color key="backgroundColor" red="0.1647058824" green="0.50196078430000002" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="4ZE-Il-RM2"/>
-                                    <constraint firstAttribute="width" constant="100" id="ewJ-of-bNU"/>
+                                    <constraint firstAttribute="width" constant="199" id="ewJ-of-bNU"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                 <state key="normal" title="Call">
