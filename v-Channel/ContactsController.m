@@ -191,6 +191,7 @@
         [self.activeCall.navigationController popToRootViewControllerAnimated:YES];
     }
     [AppDelegate pushCommand:FinishCall toUser:_activeCall.peer[@"email"]];
+    _activeCall = nil;
 }
 
 - (void)handlePushCommand:(NSNotification*)notify
