@@ -27,7 +27,7 @@ enum Command {
     Finish
 };
 
-#define SOCKET_IO @"http://192.168.1.15:3000"
+#define SOCKET_IO @"http://95.31.31.166:3000"
 
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
