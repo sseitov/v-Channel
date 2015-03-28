@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#include "Common.h"
 
 @protocol VideoControllerDelegate <NSObject>
 
-- (void)videoSendPacket:(NSDictionary*)packet;
+- (void)videoSendCommand:(enum Command)command withData:(NSData*)data;
 
 @end
 
@@ -19,6 +20,6 @@
 @property (weak, nonatomic) id<VideoControllerDelegate> delegate;
 
 - (void)shutdown;
-- (void)videoReceivePacket:(NSDictionary*)packet;
+- (void)videoReceiveCommand:(enum Command)command withData:(NSData*)data;
 
 @end

@@ -7,20 +7,21 @@
 //
 
 #import "ViewController.h"
-#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #include "Common.h"
 
+#import "Channel.h"
+
 @interface ViewController () {
-    dispatch_queue_t _serverQueue;
+    dispatch_queue_t _socketQueue;
+    dispatch_queue_t _delegateQueue;
 }
 
 @property (unsafe_unretained) IBOutlet NSTextView *log;
 - (IBAction)start:(NSButton *)sender;
 
 @property (strong, nonatomic) GCDAsyncSocket *serverSocket;
-@property (strong, nonatomic) GCDAsyncSocket *firstClient;
-@property (strong, nonatomic) GCDAsyncSocket *secondClient;
 @property (nonatomic) BOOL isRunning;
+@property (strong, nonatomic) Channel *channel;
 
 @end
 
@@ -29,9 +30,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _socketQueue = dispatch_queue_create("socketQueue", NULL);
+    _delegateQueue = dispatch_queue_create("delegateQueue", NULL);
 
-    _serverQueue = dispatch_queue_create("socketQueue", NULL);
-    _serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_serverQueue];
+    _serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_delegateQueue socketQueue:_socketQueue];
 }
 
 - (void)setRepresentedObject:(id)representedObject
@@ -75,56 +77,59 @@
         _isRunning = NO;
     }
 }
-
+/*
+- (Channel*)channelForSocket:(GCDAsyncSocket*)socket
+{
+    for (Channel *channel in _channels) {
+        if ([channel containsSocket:socket]) {
+            return channel;
+        }
+    }
+    return nil;
+}
+*/
 #pragma mark - Socket delegate
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-    if (_firstClient) {
-        _secondClient = newSocket;
+    if (!_channel) {
+        _channel = [[Channel alloc] initWithSocket:newSocket];
+        [self printLog:@"create room"];
     } else {
-        _firstClient = newSocket;
+        [_channel addSocket:newSocket];
+        [self printLog:@"add second socket into room"];
     }
-    [newSocket readDataWithTimeout:-1 tag:1];
+    [newSocket readDataWithTimeout:-1 tag:READ_TAG];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:WriteFinishNotification
+                                                        object:[NSNumber numberWithLong:tag]];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSDictionary* packet = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-    if ([[packet objectForKey:@"command"] intValue] == Accept) {
-        if (_firstClient && _secondClient) {
-            [self printLog:@"accept second socket"];
-            [_firstClient writeData:data withTimeout:-1 tag:1];
-            [_secondClient writeData:data withTimeout:-1 tag:1];
-        } else {
-            [self printLog:@"accept first socket"];
-        }
-    } else if ([[packet objectForKey:@"command"] intValue] == Finish) {
-        if (_firstClient) {
-            [_firstClient writeData:data withTimeout:-1 tag:tag];
-        }
-        if (_secondClient) {
-            [_secondClient writeData:data withTimeout:-1 tag:tag];
-        }
-    } else {
-        if (sock == _firstClient) {
-            [_secondClient writeData:data withTimeout:-1 tag:tag];
-        } else {
-            [_firstClient writeData:data withTimeout:-1 tag:tag];
+    if (tag == READ_TAG && _channel && [_channel containsSocket:sock]) {
+        enum Command result = [_channel readData:data fromSocket:sock];
+        if (result == Finish || result == Accept) {
+            [sock writeData:data withTimeout:-1 tag:0];
         }
     }
-    [sock readDataWithTimeout:-1 tag:tag];
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    if (sock == _firstClient) {
-        [self printLog:@"disconnect first socket"];
-        _firstClient = nil;
-    } else {
-        [self printLog:@"disconnect second socket"];
-        _secondClient = nil;
+    if (_channel) {
+        if ([_channel leaveSocket:sock]) {
+            [self printLog:@"disconnect first socket"];
+        } else {
+            [self printLog:@"disconnect second socket and close room"];
+            [self printLog:@"======================================="];
+            _channel = nil;
+        }
     }
 }
+
 
 @end

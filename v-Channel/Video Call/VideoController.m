@@ -13,8 +13,6 @@
 #import "VTDecoder.h"
 #import "AppDelegate.h"
 
-#include "Common.h"
-
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
     dispatch_queue_t _captureQueue;
@@ -59,13 +57,6 @@
                                                object:nil];
 }
 
-- (void)started
-{
-    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video],
-                           @"command" : [NSNumber numberWithInt:Started]};
-    [self.delegate videoSendPacket:json];
-}
-
 - (void)shutdown
 {
     NSLog(@"close video");
@@ -78,34 +69,30 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)videoReceivePacket:(NSDictionary*)packet
+- (void)videoReceiveCommand:(enum Command)command withData:(NSData*)data
 {
-    switch ([packet[@"command"] intValue]) {
-        case Start:
+    switch (command) {
+        case VideoStart:
             if (!_decoder.isOpened) {
-                NSDictionary* params = packet[@"params"];
-                if ([_decoder openForWidth:[params[@"width"] intValue]
-                                    height:[params[@"height"] intValue]
-                                       sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
-                                       pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]])
+                NSDictionary* params = [NSJSONSerialization JSONObjectWithData:data
+                                                                       options:kNilOptions
+                                                                         error:nil];
+                if (params && [_decoder openForWidth:[params[@"width"] intValue]
+                                              height:[params[@"height"] intValue]
+                                                 sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
+                                                 pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]])
                 {
-                    [self started];
+                    [self.delegate videoSendCommand:VideoStarted withData:nil];
                 }
                 
             }
             break;
-        case Started:
+        case VideoStarted:
             self.decoderIsOpened = YES;
             break;
-        case Stop:
-            [_decoder close];
-            [_peerView clear];
-            self.decoderIsOpened = NO;
-            break;
-        case Data:
+        case VideoData:
             if (_decoder.isOpened) {
-                [_decoder decodeData:[[NSData alloc] initWithBase64EncodedString:packet[@"params"]
-                                                                         options:kNilOptions]];
+                [_decoder decodeData:data];
             }
             break;
         case Finish:
@@ -144,10 +131,6 @@
         [_encoder close];
         [_selfView clear];
         self.isCapture = NO;
-        
-        NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video],
-                               @"command" : [NSNumber numberWithInt:Stop]};
-        [self.delegate videoSendPacket:json];
     }
 }
 
@@ -160,8 +143,7 @@
 
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    NSDictionary *json = @{@"command" : [NSNumber numberWithInt:Finish]};
-    [self.delegate videoSendPacket:json];
+    [self.delegate videoSendCommand:Finish withData:nil];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -205,15 +187,11 @@
                                  @"height" : [NSNumber numberWithInt:sz.height],
                                  @"sps" : [_encoder.sps base64EncodedStringWithOptions:kNilOptions],
                                  @"pps" : [_encoder.pps base64EncodedStringWithOptions:kNilOptions]};
-        NSDictionary *command = @{@"media" : [NSNumber numberWithInt:Video],
-                                  @"command" : [NSNumber numberWithInt:Start],
-                                  @"params" : params};
-        [self.delegate videoSendPacket:command];
+        [self.delegate videoSendCommand:VideoStart withData:[NSJSONSerialization dataWithJSONObject:params
+                                                                                            options:kNilOptions
+                                                                                              error:nil]];
     } else {
-        NSDictionary *command = @{@"media" : [NSNumber numberWithInt:Video],
-                                  @"command" : [NSNumber numberWithInt:Data],
-                                  @"params" : [data base64EncodedStringWithOptions:kNilOptions]};
-        [self.delegate videoSendPacket:command];
+        [self.delegate videoSendCommand:VideoData withData:data];
     }
 }
 

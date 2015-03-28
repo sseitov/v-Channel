@@ -12,19 +12,25 @@
 #define SERVER_PORT 1964
 #define SERVER_HOST @"192.168.1.15"
 
-enum MediaType {
-    Video,
-    Audio
-};
+#define DEFAULT_CONNECTION_TIMEOUT 5
+
+#define READ_TAG    1402
 
 enum Command {
-    Accept = 1,
+    NoCommand,
+    Accept,
     Reject,
-    Start,
-    Started,
-    Stop,
-    Data,
+    VideoStart,
+    VideoStarted,
+    VideoData,
     Finish
 };
+
+struct Packet {
+    uint32_t    command;
+    uint32_t    dataLength;
+};
+
+#define HEADER_SIZE 8
 
 #endif

@@ -16,6 +16,8 @@
 
 @interface CallController () <VideoControllerDelegate> {
     dispatch_queue_t _socketQueue;
+    dispatch_queue_t _delegateQueue;
+    long _writeTag;
 }
 
 @property (weak, nonatomic) IBOutlet UIImageView *photo;
@@ -31,8 +33,9 @@
 @property (strong, nonatomic) AVAudioPlayer *ringtone;
 
 @property (strong, nonatomic) GCDAsyncSocket* socket;
+@property (strong, nonatomic) NSMutableData* channelData;
 @property (nonatomic) BOOL isConnected;
-@property (nonatomic) BOOL isAccepted;
+@property (nonatomic) enum Command acceptCommand;
 
 @property (strong, nonatomic) VideoController* video;
 
@@ -45,8 +48,11 @@
     [super viewDidLoad];
     
     _socketQueue = dispatch_queue_create("socketQueue", NULL);
-    _socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
-
+    _delegateQueue = dispatch_queue_create("delegateQueue", NULL);
+    _socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_delegateQueue socketQueue:_socketQueue];
+    _writeTag = arc4random();
+    _channelData = [NSMutableData new];
+    
     if (_peer[@"displayName"]) {
         self.title = _peer[@"displayName"];
     } else {
@@ -187,7 +193,7 @@
         [sender setTitle:@"End Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
         [_animation startAnimating];
-        _isAccepted = YES;
+        _acceptCommand = 0;
         [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
     }
 }
@@ -197,7 +203,7 @@
     [_ringtone stop];
     [_animation stopAnimating];
     _incommingCall = NO;
-    _isAccepted = YES;
+    _acceptCommand = Accept;
     [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
 }
 
@@ -206,7 +212,7 @@
     [_ringtone stop];
     [_animation stopAnimating];
     _incommingCall = NO;
-    _isAccepted = NO;
+    _acceptCommand = Reject;
     [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
     [self updateGUI];
 }
@@ -220,14 +226,18 @@
     }
 }
 
-- (void)videoSendPacket:(NSDictionary*)packet
+- (void)videoSendCommand:(enum Command)command withData:(NSData*)data
 {
-    NSData* data = [NSJSONSerialization dataWithJSONObject:packet options:kNilOptions error:nil];
-    [_socket writeData:data withTimeout:-1 tag:1];
-    if ([[packet objectForKey:@"command"] intValue] == Finish) {
-        [self finish];
+    struct Packet packet;
+    packet.command = command;
+    packet.dataLength = data ? (uint32_t)data.length : 0;
+
+    if (packet.dataLength > 0 && data) {
+        NSMutableData *sendData = [NSMutableData dataWithBytes:&packet length:sizeof(packet)];
+        [sendData appendData:data];
+        [_socket writeData:sendData withTimeout:-1 tag:_writeTag];
     } else {
-        [_socket readDataWithTimeout:-1 tag:1];
+        [_socket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:-1 tag:_writeTag];
     }
 }
 
@@ -236,26 +246,53 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     _isConnected = YES;
-    NSDictionary* packet = _isAccepted ? @{@"command" : [NSNumber numberWithInt:Accept]} : @{@"command" : [NSNumber numberWithInt:Reject]};
-    [sock writeData:[NSJSONSerialization dataWithJSONObject:packet options:kNilOptions error:nil] withTimeout:-1 tag:1];
-    [sock readDataWithTimeout:-1 tag:1];
+    if (_acceptCommand) {
+        struct Packet acceptPacket = {_acceptCommand, 0};
+        [sock writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(acceptPacket)] withTimeout:-1 tag:_writeTag];
+    } else {
+        [sock readDataWithTimeout:-1 tag:READ_TAG];
+    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSDictionary* packet = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-
-    if ([[packet objectForKey:@"command"] intValue] == Accept) {
-        [self accept];
-    } else if ([[packet objectForKey:@"command"] intValue] == Reject) {
-        [self reject];
-    } else if ([[packet objectForKey:@"command"] intValue] == Finish) {
-        [self finish];
-    } else {
-        [_video videoReceivePacket:packet];
+    [_channelData appendData:data];
+    if (_channelData.length >= HEADER_SIZE) {
+        struct Packet *pPacket = (struct Packet *)_channelData.bytes;
+        switch (pPacket->command) {
+            case Accept:
+                [self accept];
+                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                break;
+            case Reject:
+                [self reject];
+                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                break;
+            case Finish:
+                [self finish];
+                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                break;
+            default:
+                if (_channelData.length >= pPacket->dataLength + HEADER_SIZE) {
+                    if (pPacket->dataLength > 0) {
+                        NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+HEADER_SIZE) length:pPacket->dataLength];
+                        [_video videoReceiveCommand:pPacket->command withData:params];
+                    } else {
+                        [_video videoReceiveCommand:pPacket->command withData:nil];
+                    }
+                    [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                }
+                break;
+        }
     }
-    [sock readDataWithTimeout:-1 tag:1];
+    [sock readDataWithTimeout:-1 tag:READ_TAG];
 }
 
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    if (tag == _writeTag) {
+        [_socket readDataWithTimeout:-1 tag:READ_TAG];
+    }
+}
 
 @end
