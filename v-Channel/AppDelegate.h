@@ -26,7 +26,7 @@ extern NSString* const PushCommandNotification;
 
 + (BOOL)isPad;
 + (AppDelegate*)sharedInstance;
-+ (void)pushCommand:(enum PushCommand)command toUser:(NSString*)user;
++ (void)pushCallCommandToUser:(NSString*)user;
 
 @end
 

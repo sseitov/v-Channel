@@ -53,7 +53,6 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
@@ -63,16 +62,12 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 {
     if (application.applicationState == UIApplicationStateActive) {
         [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
-                                                            object:[userInfo objectForKey:@"user"]
-                                                          userInfo:@{ @"command" : [userInfo objectForKey:@"command"]}];
+                                                            object:[userInfo objectForKey:@"user"]];
     } else {
-        enum PushCommand command = [[userInfo objectForKey:@"command"] intValue];
-        if (command == Call) {
-            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-            [currentInstallation setChannels:@[[userInfo objectForKey:@"user"]]];
-            [currentInstallation saveInBackground];
-            [PFPush handlePush:userInfo];
-        }
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        [currentInstallation setObject:[userInfo objectForKey:@"user"] forKey:@"activeCall"];
+        [currentInstallation saveInBackground];
+        [PFPush handlePush:userInfo];
     }
 }
 
@@ -98,21 +93,19 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    NSString* user = currentInstallation[@"activeCall"];
+    if (user) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification object:user];
+        [currentInstallation removeObjectForKey:@"activeCall"];
+        [currentInstallation saveInBackground];
+    }
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = 0;
         [currentInstallation saveEventually];
     }
     
-    NSString* user = [currentInstallation.channels firstObject];
-    if (user) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:PushCommandNotification
-                                                            object:user
-                                                          userInfo:@{ @"command" : [NSNumber numberWithInt:Call]}];
-        [currentInstallation setChannels:@[]];
-        [currentInstallation saveInBackground];
-    }
+    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -155,7 +148,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 #pragma mark - Push notifications
 
-+ (void)pushCommand:(enum PushCommand)command toUser:(NSString*)user
++ (void)pushCallCommandToUser:(NSString*)user
 {
     // Build a query to match user
     PFQuery *query = [PFUser query];
@@ -164,8 +157,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
     NSDictionary *data = @{@"alert" : message,
                            @"badge" : @"Increment",
                            @"sound": @"default",
-                           @"user" : [PFUser currentUser][@"email"],
-                           @"command" : [NSNumber numberWithInt:command]};
+                           @"user" : [PFUser currentUser][@"email"]};
     PFPush *push = [[PFPush alloc] init];
     [push setQuery:query];
     [push setData:data];

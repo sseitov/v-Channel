@@ -12,20 +12,6 @@
 #import "VTEncoder.h"
 #import "VTDecoder.h"
 #import "AppDelegate.h"
-#import <SIOSocket/SIOSocket.h>
-
-enum MediaType {
-    Video,
-    Audio
-};
-
-enum Command {
-    Start,
-    Started,
-    Stop,
-    Data,
-    Finish
-};
 
 #define SOCKET_IO @"http://95.31.31.166:3000"
 
@@ -48,7 +34,6 @@ enum Command {
 @property (nonatomic) double aspectRatio;
 @property (nonatomic) BOOL isCapture;
 
-@property (strong, nonatomic) SIOSocket* socket;
 
 @end
 
@@ -57,8 +42,6 @@ enum Command {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.title = _peer[@"displayName"];
     
     [[Camera shared] startup];
     _captureQueue = dispatch_queue_create("com.vchannel.VideoCall", DISPATCH_QUEUE_SERIAL);
@@ -74,55 +57,63 @@ enum Command {
                                              selector:@selector(deviceOrientationDidChange:)
                                                  name: UIDeviceOrientationDidChangeNotification
                                                object:nil];
-    [SIOSocket socketWithHost:SOCKET_IO response:^(SIOSocket *socket) {
-        _socket = socket;
-        [socket on:@"message" callback:^(SIOParameterArray *args) {
-            NSDictionary* message = [args firstObject];
-            if ([message[@"user"] isEqual:_peer[@"email"]]) {
-                switch ([message[@"command"] intValue]) {
-                    case Start:
-                        if (!_decoder.isOpened) {
-                            NSDictionary* params = message[@"params"];
-                            if ([_decoder openForWidth:[params[@"width"] intValue]
-                                                height:[params[@"height"] intValue]
-                                                   sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
-                                                   pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]])
-                            {
-                                [self started];
-                            }
-                            
-                        }
-                        break;
-                    case Started:
-                        self.decoderIsOpened = YES;
-                        break;
-                    case Stop:
-                        [_decoder close];
-                        [_peerView clear];
-                        self.decoderIsOpened = NO;
-                        break;
-                    case Data:
-                        if (_decoder.isOpened) {
-                            [_decoder decodeData:[[NSData alloc] initWithBase64EncodedString:message[@"params"]
-                                                                                     options:kNilOptions]];
-                        }
-                        break;
-                    case Finish:
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }];
-    }];
 }
 
 - (void)started
 {
-    NSDictionary *json = @{@"user" : [PFUser currentUser][@"email"],
-                           @"media" : [NSNumber numberWithInt:Video],
+    NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video],
                            @"command" : [NSNumber numberWithInt:Started]};
-    [_socket emit:@"message" args:@[json]];
+    [self.delegate videoSendPacket:json];
+}
+
+- (void)shutdown
+{
+    NSLog(@"close video");
+    [self stopCapture];
+    [_decoder close];
+    [[Camera shared] shutdown];
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)videoReceivePacket:(NSDictionary*)packet
+{
+    switch ([packet[@"command"] intValue]) {
+        case Start:
+            if (!_decoder.isOpened) {
+                NSDictionary* params = packet[@"params"];
+                if ([_decoder openForWidth:[params[@"width"] intValue]
+                                    height:[params[@"height"] intValue]
+                                       sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
+                                       pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]])
+                {
+                    [self started];
+                }
+                
+            }
+            break;
+        case Started:
+            self.decoderIsOpened = YES;
+            break;
+        case Stop:
+            [_decoder close];
+            [_peerView clear];
+            self.decoderIsOpened = NO;
+            break;
+        case Data:
+            if (_decoder.isOpened) {
+                [_decoder decodeData:[[NSData alloc] initWithBase64EncodedString:packet[@"params"]
+                                                                         options:kNilOptions]];
+            }
+            break;
+        case Finish:
+            break;
+        default:
+            break;
+    }
+
 }
 
 - (void)deviceOrientationDidChange:(NSNotification*)notify
@@ -154,10 +145,9 @@ enum Command {
         [_selfView clear];
         self.isCapture = NO;
         
-        NSDictionary *json = @{@"user" : [PFUser currentUser][@"email"],
-                               @"media" : [NSNumber numberWithInt:Video],
+        NSDictionary *json = @{@"media" : [NSNumber numberWithInt:Video],
                                @"command" : [NSNumber numberWithInt:Stop]};
-        [_socket emit:@"message" args:@[json]];
+        [self.delegate videoSendPacket:json];
     }
 }
 
@@ -170,18 +160,8 @@ enum Command {
 
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    NSDictionary *json = @{@"user" : [PFUser currentUser][@"email"],
-                           @"media" : [NSNumber numberWithInt:Video],
-                           @"command" : [NSNumber numberWithInt:Finish]};
-    [_socket emit:@"message" args:@[json]];
-
-    [[Camera shared] shutdown];
-    [_socket close];
-    
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    [self.delegate callControllerDidFinish];
+    NSDictionary *json = @{@"command" : [NSNumber numberWithInt:Finish]};
+    [self.delegate videoSendPacket:json];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -225,17 +205,15 @@ enum Command {
                                  @"height" : [NSNumber numberWithInt:sz.height],
                                  @"sps" : [_encoder.sps base64EncodedStringWithOptions:kNilOptions],
                                  @"pps" : [_encoder.pps base64EncodedStringWithOptions:kNilOptions]};
-        NSDictionary *command = @{@"user" : [PFUser currentUser][@"email"],
-                                  @"media" : [NSNumber numberWithInt:Video],
+        NSDictionary *command = @{@"media" : [NSNumber numberWithInt:Video],
                                   @"command" : [NSNumber numberWithInt:Start],
                                   @"params" : params};
-        [_socket emit:@"message" args:@[command]];
+        [self.delegate videoSendPacket:command];
     } else {
-        NSDictionary *command = @{@"user" : [PFUser currentUser][@"email"],
-                                  @"media" : [NSNumber numberWithInt:Video],
+        NSDictionary *command = @{@"media" : [NSNumber numberWithInt:Video],
                                   @"command" : [NSNumber numberWithInt:Data],
                                   @"params" : [data base64EncodedStringWithOptions:kNilOptions]};
-        [_socket emit:@"message" args:@[command]];
+        [self.delegate videoSendPacket:command];
     }
 }
 

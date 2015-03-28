@@ -174,6 +174,7 @@
             UITableViewCell* cell = sender;
             NSIndexPath* indexPath = [self.tableView indexPathForCell:cell];
             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+            
             _activeCall.peer = [_channels objectAtIndex:indexPath.row];
             _activeCall.incommingCall = NO;
         } else {
@@ -183,50 +184,23 @@
     }
 }
 
-- (void)callControllerDidFinish
-{
-    if ([AppDelegate isPad]) {
-        [self.activeCall.navigationController popViewControllerAnimated:YES];
-    } else {
-        [self.activeCall.navigationController popToRootViewControllerAnimated:YES];
-    }
-    [AppDelegate pushCommand:FinishCall toUser:_activeCall.peer[@"email"]];
-    _activeCall = nil;
-}
-
 - (void)handlePushCommand:(NSNotification*)notify
 {
     PFUser *user = [self findChannel:notify.object];
     if (!user) {
         return;
     }
-    enum PushCommand command = [[notify.userInfo objectForKey:@"command"] intValue];
-    switch (command) {
-        case Call:
-            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
-                [_activeCall setIncommingCall];
-            } else {
-                [self performSegueWithIdentifier:@"Call" sender:user];
-            }
-            break;
-        case AcceptCall:
-            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
-                [_activeCall accept];
-            }
-            break;
-        case RejectCall:
-            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
-                [_activeCall reject];
-            }
-            break;
-        case FinishCall:
-            if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
-                [self callControllerDidFinish];
-            }
-            break;
-        default:
-            break;
+    if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
+        [_activeCall setIncommingCall];
+    } else {
+        [self performSegueWithIdentifier:@"Call" sender:user];
     }
+}
+
+- (void)callControllerDidFinish
+{
+    _activeCall = nil;
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 @end

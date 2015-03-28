@@ -10,8 +10,14 @@
 #import "AppDelegate.h"
 #import <AVFoundation/AVFoundation.h>
 #import "VideoController.h"
+#import <CocoaAsyncSocket/GCDAsyncSocket.h>
 
-@interface CallController ()
+#define SERVER_PORT 1964
+#define SERVER_HOST @"192.168.1.15"
+
+@interface CallController () <VideoControllerDelegate> {
+    dispatch_queue_t _socketQueue;
+}
 
 @property (weak, nonatomic) IBOutlet UIImageView *photo;
 @property (weak, nonatomic) IBOutlet UIImageView *animation;
@@ -23,8 +29,13 @@
 - (IBAction)acceptIncomming:(UIButton *)sender;
 - (IBAction)rejectIncomming:(UIButton *)sender;
 
-@property (nonatomic) BOOL doCall;
 @property (strong, nonatomic) AVAudioPlayer *ringtone;
+
+@property (strong, nonatomic) GCDAsyncSocket* socket;
+@property (nonatomic) BOOL isConnected;
+@property (nonatomic) BOOL isAccepted;
+
+@property (strong, nonatomic) VideoController* video;
 
 @end
 
@@ -33,6 +44,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _socketQueue = dispatch_queue_create("socketQueue", NULL);
+    _socket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
+
     if (_peer[@"displayName"]) {
         self.title = _peer[@"displayName"];
     } else {
@@ -74,11 +89,7 @@
 
 - (void)done
 {
-    if ([AppDelegate isPad]) {
-        [self.navigationController popViewControllerAnimated:YES];
-    } else {
-        [self.navigationController popToRootViewControllerAnimated:YES];
-    }
+    [self.delegate callControllerDidFinish];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -114,7 +125,6 @@
         [_animation stopAnimating];
         [_callButton setTitle:@"Call" forState:UIControlStateNormal];
         _callButton.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
-        _doCall = NO;
     }
 }
 
@@ -126,35 +136,50 @@
 
 - (void)accept
 {
-    [_ringtone stop];
-    _incommingCall = NO;
-    [self updateGUI];
-    [self performSegueWithIdentifier:@"Video" sender:self];
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [_ringtone stop];
+        _incommingCall = NO;
+        [self updateGUI];
+        [self performSegueWithIdentifier:@"Video" sender:self];
+    });
 }
 
 - (void)reject
 {
-    [_ringtone stop];
-    _incommingCall = NO;
-    _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
-                                                                                     withExtension:@"wav"] error:nil];
-    _ringtone.numberOfLoops = 0;
-    if ([_ringtone prepareToPlay]) {
-        [_ringtone play];
-    }
-    [self updateGUI];
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [_ringtone stop];
+        _incommingCall = NO;
+        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
+                                                                                         withExtension:@"wav"] error:nil];
+        _ringtone.numberOfLoops = 0;
+        if ([_ringtone prepareToPlay]) {
+            [_ringtone play];
+        }
+        [self updateGUI];
+    });
+}
+
+- (void)finish
+{
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [_socket disconnect];
+        _isConnected = NO;
+        [_video shutdown];
+        [self.delegate callControllerDidFinish];
+    });
 }
 
 - (IBAction)call:(UIButton*)sender
 {
-    if (_doCall) {
-        [AppDelegate pushCommand:FinishCall toUser:_peer[@"email"]];
+    if (_isConnected) {
+        [_socket disconnect];
+        _isConnected = NO;
         [_ringtone stop];
         [sender setTitle:@"Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
         [_animation stopAnimating];
     } else {
-        [AppDelegate pushCommand:Call toUser:_peer[@"email"]];
+        [AppDelegate pushCallCommandToUser:_peer[@"email"]];
         _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"calling" withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = -1;
         if ([_ringtone prepareToPlay]) {
@@ -163,38 +188,75 @@
         [sender setTitle:@"End Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
         [_animation startAnimating];
+        _isAccepted = YES;
+        [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
     }
-    _doCall = !_doCall;
 }
 
 - (IBAction)acceptIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:AcceptCall toUser:_peer[@"email"]];
     [_ringtone stop];
     [_animation stopAnimating];
-    _doCall = NO;
     _incommingCall = NO;
-    [self performSegueWithIdentifier:@"Video" sender:self];
+    _isAccepted = YES;
+    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
 }
 
 - (IBAction)rejectIncomming:(UIButton *)sender
 {
-    [AppDelegate pushCommand:RejectCall toUser:_peer[@"email"]];
     [_ringtone stop];
     [_animation stopAnimating];
     _incommingCall = NO;
-    _doCall = NO;
+    _isAccepted = NO;
+    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
     [self updateGUI];
 }
-
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"Video"]) {
-        VideoController *vc = [segue destinationViewController];
-        vc.peer = self.peer;
-        vc.delegate = self.delegate;
+        _video = [segue destinationViewController];
+        _video.delegate = self;
+        _video.title = _peer[@"email"];
     }
 }
+
+- (void)videoSendPacket:(NSDictionary*)packet
+{
+    NSData* data = [NSJSONSerialization dataWithJSONObject:packet options:kNilOptions error:nil];
+    [_socket writeData:data withTimeout:-1 tag:1];
+    if ([[packet objectForKey:@"command"] intValue] == Finish) {
+        [self finish];
+    } else {
+        [_socket readDataWithTimeout:-1 tag:1];
+    }
+}
+
+#pragma mark - Socket delegate
+
+- (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
+{
+    _isConnected = YES;
+    NSDictionary* packet = _isAccepted ? @{@"command" : [NSNumber numberWithInt:Accept]} : @{@"command" : [NSNumber numberWithInt:Reject]};
+    [sock writeData:[NSJSONSerialization dataWithJSONObject:packet options:kNilOptions error:nil] withTimeout:-1 tag:1];
+    [sock readDataWithTimeout:-1 tag:1];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
+{
+    NSDictionary* packet = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+
+    if ([[packet objectForKey:@"command"] intValue] == Accept) {
+        [self accept];
+    } else if ([[packet objectForKey:@"command"] intValue] == Reject) {
+        [self reject];
+    } else if ([[packet objectForKey:@"command"] intValue] == Finish) {
+        [self finish];
+    } else {
+        [_video videoReceivePacket:packet];
+    }
+    [sock readDataWithTimeout:-1 tag:1];
+}
+
 
 @end

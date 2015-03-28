@@ -7,11 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CallController.h"
+
+enum MediaType {
+    Video,
+    Audio
+};
+
+enum Command {
+    Accept = 1,
+    Reject,
+    Start,
+    Started,
+    Stop,
+    Data,
+    Finish
+};
+
+@protocol VideoControllerDelegate <NSObject>
+
+- (void)videoSendPacket:(NSDictionary*)packet;
+
+@end
 
 @interface VideoController : UIViewController
 
-@property (strong, nonatomic) PFUser* peer;
-@property (weak, nonatomic) id<CallControllerDelegate> delegate;
+@property (weak, nonatomic) id<VideoControllerDelegate> delegate;
+
+- (void)shutdown;
+- (void)videoReceivePacket:(NSDictionary*)packet;
 
 @end
