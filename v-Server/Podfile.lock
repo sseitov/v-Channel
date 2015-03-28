@@ -1,0 +1,10 @@
+PODS:
+  - CocoaAsyncSocket (7.4.1)
+
+DEPENDENCIES:
+  - CocoaAsyncSocket (~> 7.4.1)
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: b0a1a89e7ea4c1c0ea4ec83f57d55117d3cdae06
+
+COCOAPODS: 0.36.1
