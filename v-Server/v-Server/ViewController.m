@@ -8,18 +8,7 @@
 
 #import "ViewController.h"
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
-
-#define SERVER_PORT 1964
-
-enum Command {
-    Accept = 1,
-    Reject,
-    Start,
-    Started,
-    Stop,
-    Data,
-    Finish
-};
+#include "Common.h"
 
 @interface ViewController () {
     dispatch_queue_t _serverQueue;

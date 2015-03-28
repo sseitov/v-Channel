@@ -8,21 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-enum MediaType {
-    Video,
-    Audio
-};
-
-enum Command {
-    Accept = 1,
-    Reject,
-    Start,
-    Started,
-    Stop,
-    Data,
-    Finish
-};
-
 @protocol VideoControllerDelegate <NSObject>
 
 - (void)videoSendPacket:(NSDictionary*)packet;

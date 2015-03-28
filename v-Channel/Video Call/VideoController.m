@@ -13,7 +13,7 @@
 #import "VTDecoder.h"
 #import "AppDelegate.h"
 
-#define SOCKET_IO @"http://95.31.31.166:3000"
+#include "Common.h"
 
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     

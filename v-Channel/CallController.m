@@ -12,8 +12,7 @@
 #import "VideoController.h"
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 
-#define SERVER_PORT 1964
-#define SERVER_HOST @"192.168.1.15"
+#include "Common.h"
 
 @interface CallController () <VideoControllerDelegate> {
     dispatch_queue_t _socketQueue;

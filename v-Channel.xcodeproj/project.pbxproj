@@ -88,6 +88,7 @@
 		2CB7956D1AB6075700B982C9 /* default.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = default.css; sourceTree = SOURCE_ROOT; };
 		2CB7956F1AB6205100B982C9 /* ContactsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsController.h; sourceTree = "<group>"; };
 		2CB795701AB6205100B982C9 /* ContactsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsController.m; sourceTree = "<group>"; };
+		2CD1C88C1AC6D0A9003274E2 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = SOURCE_ROOT; };
 		2CE40FD21AB6E76200234135 /* ProfileController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileController.h; sourceTree = "<group>"; };
 		2CE40FD31AB6E76200234135 /* ProfileController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileController.m; sourceTree = "<group>"; };
 		2CE410061AB6F86E00234135 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -192,6 +193,7 @@
 				2CE4102E1AB76D6D00234135 /* CallController.m */,
 				2CB795341AB5F66000B982C9 /* AppDelegate.h */,
 				2CB795351AB5F66000B982C9 /* AppDelegate.m */,
+				2CD1C88C1AC6D0A9003274E2 /* Common.h */,
 			);
 			path = "v-Channel";
 			sourceTree = "<group>";
