@@ -21,6 +21,4 @@
 @property (strong, nonatomic) PFUser *peer;
 @property (nonatomic) BOOL incommingCall;
 
-- (void)setIncommingCall;
-
 @end

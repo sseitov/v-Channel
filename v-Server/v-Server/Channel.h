@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
+#include "Common.h"
 
 extern NSString* const WriteFinishNotification;
 

@@ -187,12 +187,7 @@
 - (void)handlePushCommand:(NSNotification*)notify
 {
     PFUser *user = [self findChannel:notify.object];
-    if (!user) {
-        return;
-    }
-    if (_activeCall && [_activeCall.peer[@"email"] isEqual:user[@"email"]]) {
-        [_activeCall setIncommingCall];
-    } else {
+    if (user) {
         [self performSegueWithIdentifier:@"Call" sender:user];
     }
 }

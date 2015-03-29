@@ -7,7 +7,6 @@
 //
 
 #import "Channel.h"
-#include "Common.h"
 
 NSString* const WriteFinishNotification = @"WriteFinishNotification";
 
@@ -78,7 +77,7 @@ NSString* const WriteFinishNotification = @"WriteFinishNotification";
         index = 1;
     }
     if (index >= 0) {
-        [socketPair[index] readDataWithTimeout:-1 tag:READ_TAG];
+        [socketPair[index] readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
     }
 }
 
@@ -86,18 +85,18 @@ NSString* const WriteFinishNotification = @"WriteFinishNotification";
 {
     int index = (socket == socketPair[0]) ? 1 : 0;
     [receivedData[index] appendData:data];
-    if (receivedData[index].length >= HEADER_SIZE) {
+    if (receivedData[index].length >= sizeof(Packet)) {
         pPacket[index] = (struct Packet *)receivedData[index].bytes;
-        if (receivedData[index].length >= pPacket[index]->dataLength + HEADER_SIZE) {
+        if (receivedData[index].length >= pPacket[index]->dataLength + sizeof(Packet)) {
             sendData[index] = [NSData dataWithBytes:receivedData[index].bytes
-                                             length:(pPacket[index]->dataLength + HEADER_SIZE)];
+                                             length:(pPacket[index]->dataLength + sizeof(Packet))];
             enum Command result = pPacket[index]->command;
-            [receivedData[index] replaceBytesInRange:NSMakeRange(0, pPacket[index]->dataLength + HEADER_SIZE) withBytes:NULL length:0];
-            [socketPair[index] writeData:sendData[index] withTimeout:-1 tag:writeTag[index]];
+            [receivedData[index] replaceBytesInRange:NSMakeRange(0, pPacket[index]->dataLength + sizeof(Packet)) withBytes:NULL length:0];
+            [socketPair[index] writeData:sendData[index] withTimeout:WRITE_TIMEOUT tag:writeTag[index]];
             return result;
         }
     }
-    [socketPair[index] readDataWithTimeout:-1 tag:READ_TAG];
+    [socketPair[index] readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
     return NoCommand;
 }
 

@@ -133,17 +133,10 @@
     }
 }
 
-- (void)setIncommingCall
-{
-    _incommingCall = YES;
-    [self updateGUI];
-}
-
 - (void)accept
 {
     dispatch_async(dispatch_get_main_queue(), ^() {
         [_ringtone stop];
-        _incommingCall = NO;
         [self updateGUI];
         [self performSegueWithIdentifier:@"Video" sender:self];
     });
@@ -151,9 +144,10 @@
 
 - (void)reject
 {
+    [_socket disconnect];
+    _isConnected = NO;
     dispatch_async(dispatch_get_main_queue(), ^() {
         [_ringtone stop];
-        _incommingCall = NO;
         _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
                                                                                          withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = 0;
@@ -166,10 +160,10 @@
 
 - (void)finish
 {
+    [_socket disconnect];
+    _isConnected = NO;
+    [_video shutdown];
     dispatch_async(dispatch_get_main_queue(), ^() {
-        [_socket disconnect];
-        _isConnected = NO;
-        [_video shutdown];
         [self.delegate callControllerDidFinish];
     });
 }
@@ -193,8 +187,8 @@
         [sender setTitle:@"End Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
         [_animation startAnimating];
-        _acceptCommand = 0;
-        [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
+        _acceptCommand = NoCommand;
+        [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
     }
 }
 
@@ -202,18 +196,18 @@
 {
     [_ringtone stop];
     [_animation stopAnimating];
-    _incommingCall = NO;
     _acceptCommand = Accept;
-    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
+    _incommingCall = NO;
+    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
 }
 
 - (IBAction)rejectIncomming:(UIButton *)sender
 {
     [_ringtone stop];
     [_animation stopAnimating];
-    _incommingCall = NO;
     _acceptCommand = Reject;
-    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT error:nil];
+    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
+    _incommingCall = NO;
     [self updateGUI];
 }
 
@@ -231,13 +225,13 @@
     struct Packet packet;
     packet.command = command;
     packet.dataLength = data ? (uint32_t)data.length : 0;
-
+    
     if (packet.dataLength > 0 && data) {
         NSMutableData *sendData = [NSMutableData dataWithBytes:&packet length:sizeof(packet)];
         [sendData appendData:data];
-        [_socket writeData:sendData withTimeout:-1 tag:_writeTag];
+        [_socket writeData:sendData withTimeout:WRITE_TIMEOUT tag:_writeTag];
     } else {
-        [_socket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:-1 tag:_writeTag];
+        [_socket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:_writeTag];
     }
 }
 
@@ -246,53 +240,60 @@
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     _isConnected = YES;
+    [_channelData setLength:0];
     if (_acceptCommand) {
-        struct Packet acceptPacket = {_acceptCommand, 0};
-        [sock writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(acceptPacket)] withTimeout:-1 tag:_writeTag];
+        struct Packet packet = {_acceptCommand, 0};
+        if (_acceptCommand == Reject) {
+            _isConnected = NO;
+        }
+        [sock writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:_writeTag];
     } else {
-        [sock readDataWithTimeout:-1 tag:READ_TAG];
+        [sock readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
     }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
     [_channelData appendData:data];
-    if (_channelData.length >= HEADER_SIZE) {
+    if (_channelData.length >= sizeof(Packet)) {
         struct Packet *pPacket = (struct Packet *)_channelData.bytes;
         switch (pPacket->command) {
             case Accept:
                 [self accept];
-                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(Packet)) withBytes:NULL length:0];
                 break;
             case Reject:
                 [self reject];
-                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
                 break;
             case Finish:
                 [self finish];
-                [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
                 break;
             default:
-                if (_channelData.length >= pPacket->dataLength + HEADER_SIZE) {
+                if (_channelData.length >= pPacket->dataLength + sizeof(Packet)) {
                     if (pPacket->dataLength > 0) {
-                        NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+HEADER_SIZE) length:pPacket->dataLength];
+                        NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(Packet)) length:pPacket->dataLength];
                         [_video videoReceiveCommand:pPacket->command withData:params];
                     } else {
                         [_video videoReceiveCommand:pPacket->command withData:nil];
                     }
-                    [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + HEADER_SIZE) withBytes:NULL length:0];
+                    [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(Packet)) withBytes:NULL length:0];
                 }
                 break;
         }
     }
-    [sock readDataWithTimeout:-1 tag:READ_TAG];
+    [sock readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
     if (tag == _writeTag) {
-        [_socket readDataWithTimeout:-1 tag:READ_TAG];
+        [_socket readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
     }
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
+    [self finish];
 }
 
 @end

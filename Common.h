@@ -12,7 +12,9 @@
 #define SERVER_PORT 1964
 #define SERVER_HOST @"192.168.1.15"
 
-#define DEFAULT_CONNECTION_TIMEOUT 5
+#define CONNECTION_TIMEOUT 5
+#define READ_TIMEOUT -1
+#define WRITE_TIMEOUT -1
 
 #define READ_TAG    1402
 
@@ -27,10 +29,8 @@ enum Command {
 };
 
 struct Packet {
-    uint32_t    command;
-    uint32_t    dataLength;
+    enum Command    command;
+    long            dataLength;
 };
-
-#define HEADER_SIZE 8
 
 #endif

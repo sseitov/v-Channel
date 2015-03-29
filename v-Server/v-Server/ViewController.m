@@ -30,8 +30,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _socketQueue = dispatch_queue_create("socketQueue", NULL);
-    _delegateQueue = dispatch_queue_create("delegateQueue", NULL);
+    _socketQueue = dispatch_queue_create("socketQueue", DISPATCH_QUEUE_SERIAL);
+    _delegateQueue = dispatch_queue_create("delegateQueue", DISPATCH_QUEUE_SERIAL);
 
     _serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_delegateQueue socketQueue:_socketQueue];
 }
@@ -72,6 +72,7 @@
         }
     } else {
         [_serverSocket disconnect];
+        _channel = nil;
         [self printLog:@"Server stopped."];
         [sender setTitle:@"Start"];
         _isRunning = NO;
@@ -112,8 +113,10 @@
 {
     if (tag == READ_TAG && _channel && [_channel containsSocket:sock]) {
         enum Command result = [_channel readData:data fromSocket:sock];
-        if (result == Finish || result == Accept) {
-            [sock writeData:data withTimeout:-1 tag:0];
+        if (result == Accept) {
+            [sock writeData:data withTimeout:WRITE_TIMEOUT tag:0];
+        } else if (result == Finish) {
+            [sock disconnect];
         }
     }
 }

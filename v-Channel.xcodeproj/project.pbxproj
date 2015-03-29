@@ -29,7 +29,7 @@
 		2CE4100D1AB6F95100234135 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4100C1AB6F95100234135 /* libz.dylib */; };
 		2CE410271AB7628100234135 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE410261AB7628100234135 /* Social.framework */; };
 		2CE4102B1AB7636200234135 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CE4102A1AB7636200234135 /* Accounts.framework */; };
-		2CE4102F1AB76D6D00234135 /* CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4102E1AB76D6D00234135 /* CallController.m */; };
+		2CE4102F1AB76D6D00234135 /* CallController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CE4102E1AB76D6D00234135 /* CallController.mm */; };
 		2CE410491AB782C800234135 /* tmp-0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410311AB782C800234135 /* tmp-0.gif */; };
 		2CE4104A1AB782C800234135 /* tmp-1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410321AB782C800234135 /* tmp-1.gif */; };
 		2CE4104B1AB782C800234135 /* tmp-10.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2CE410331AB782C800234135 /* tmp-10.gif */; };
@@ -99,7 +99,7 @@
 		2CE410281AB762A900234135 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2CE4102A1AB7636200234135 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		2CE4102D1AB76D6D00234135 /* CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallController.h; sourceTree = "<group>"; };
-		2CE4102E1AB76D6D00234135 /* CallController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallController.m; sourceTree = "<group>"; };
+		2CE4102E1AB76D6D00234135 /* CallController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CallController.mm; sourceTree = "<group>"; };
 		2CE410311AB782C800234135 /* tmp-0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "tmp-0.gif"; sourceTree = "<group>"; };
 		2CE410321AB782C800234135 /* tmp-1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "tmp-1.gif"; sourceTree = "<group>"; };
 		2CE410331AB782C800234135 /* tmp-10.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "tmp-10.gif"; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 				2CE40FD21AB6E76200234135 /* ProfileController.h */,
 				2CE40FD31AB6E76200234135 /* ProfileController.m */,
 				2CE4102D1AB76D6D00234135 /* CallController.h */,
-				2CE4102E1AB76D6D00234135 /* CallController.m */,
+				2CE4102E1AB76D6D00234135 /* CallController.mm */,
 				2CB795341AB5F66000B982C9 /* AppDelegate.h */,
 				2CB795351AB5F66000B982C9 /* AppDelegate.m */,
 				2CD1C88C1AC6D0A9003274E2 /* Common.h */,
@@ -434,7 +434,7 @@
 			files = (
 				2CB795691AB5F9D100B982C9 /* VTEncoder.m in Sources */,
 				2CE40FD41AB6E76200234135 /* ProfileController.m in Sources */,
-				2CE4102F1AB76D6D00234135 /* CallController.m in Sources */,
+				2CE4102F1AB76D6D00234135 /* CallController.mm in Sources */,
 				2C3C5B0F1AC1BDA1003B03D3 /* AddChannelController.m in Sources */,
 				2CB795651AB5F9D100B982C9 /* Camera.m in Sources */,
 				2CB795711AB6205100B982C9 /* ContactsController.m in Sources */,
