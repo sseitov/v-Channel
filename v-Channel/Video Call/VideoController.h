@@ -19,6 +19,7 @@
 
 @property (weak, nonatomic) id<VideoControllerDelegate> delegate;
 
+- (void)startCapture;
 - (void)shutdown;
 - (void)videoReceiveCommand:(enum Command)command withData:(NSData*)data;
 

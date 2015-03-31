@@ -113,7 +113,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     _orientation = [[UIDevice currentDevice] orientation];
-    [self startCapture];
 }
 
 - (void)startCapture

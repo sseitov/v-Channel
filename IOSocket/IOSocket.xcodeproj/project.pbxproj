@@ -12,12 +12,12 @@
 		2C17D5701AC55D9400D08849 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C17D56E1AC55D9400D08849 /* Main.storyboard */; };
 		2C17D5721AC55D9400D08849 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C17D5711AC55D9400D08849 /* Images.xcassets */; };
 		2C17D5751AC55D9400D08849 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2C17D5731AC55D9400D08849 /* LaunchScreen.xib */; };
-		2CE70A891AC80A9800350D8A /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A7E1AC80A9800350D8A /* Camera.m */; };
-		2CE70A8A1AC80A9800350D8A /* DragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A801AC80A9800350D8A /* DragView.m */; };
-		2CE70A8B1AC80A9800350D8A /* VideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A821AC80A9800350D8A /* VideoController.m */; };
-		2CE70A8C1AC80A9800350D8A /* VideoLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A841AC80A9800350D8A /* VideoLayerView.m */; };
-		2CE70A8D1AC80A9800350D8A /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A861AC80A9800350D8A /* VTDecoder.m */; };
-		2CE70A8E1AC80A9800350D8A /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A881AC80A9800350D8A /* VTEncoder.m */; };
+		2CD22C7A1ACAADA100811ECB /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C6F1ACAADA100811ECB /* Camera.m */; };
+		2CD22C7B1ACAADA100811ECB /* DragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C711ACAADA100811ECB /* DragView.m */; };
+		2CD22C7C1ACAADA100811ECB /* VideoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C731ACAADA100811ECB /* VideoController.m */; };
+		2CD22C7D1ACAADA100811ECB /* VideoLayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C751ACAADA100811ECB /* VideoLayerView.m */; };
+		2CD22C7E1ACAADA100811ECB /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C771ACAADA100811ECB /* VTDecoder.m */; };
+		2CD22C7F1ACAADA100811ECB /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C791ACAADA100811ECB /* VTEncoder.m */; };
 		2CE70A921AC80AEB00350D8A /* ServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A911AC80AEB00350D8A /* ServerController.m */; };
 		2CE70A961AC8123D00350D8A /* Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A951AC8123D00350D8A /* Channel.m */; };
 		2CE70A991AC816C600350D8A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A981AC816C600350D8A /* ViewController.m */; };
@@ -33,21 +33,21 @@
 		2C17D56F1AC55D9400D08849 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2C17D5711AC55D9400D08849 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = IOSocket/Images.xcassets; sourceTree = "<group>"; };
 		2C17D5741AC55D9400D08849 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		2CE70A7D1AC80A9800350D8A /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = "Video Call/Camera.h"; sourceTree = "<group>"; };
-		2CE70A7E1AC80A9800350D8A /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Camera.m; path = "Video Call/Camera.m"; sourceTree = "<group>"; };
-		2CE70A7F1AC80A9800350D8A /* DragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DragView.h; path = "Video Call/DragView.h"; sourceTree = "<group>"; };
-		2CE70A801AC80A9800350D8A /* DragView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DragView.m; path = "Video Call/DragView.m"; sourceTree = "<group>"; };
-		2CE70A811AC80A9800350D8A /* VideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoController.h; path = "Video Call/VideoController.h"; sourceTree = "<group>"; };
-		2CE70A821AC80A9800350D8A /* VideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoController.m; path = "Video Call/VideoController.m"; sourceTree = "<group>"; };
-		2CE70A831AC80A9800350D8A /* VideoLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoLayerView.h; path = "Video Call/VideoLayerView.h"; sourceTree = "<group>"; };
-		2CE70A841AC80A9800350D8A /* VideoLayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoLayerView.m; path = "Video Call/VideoLayerView.m"; sourceTree = "<group>"; };
-		2CE70A851AC80A9800350D8A /* VTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VTDecoder.h; path = "Video Call/VTDecoder.h"; sourceTree = "<group>"; };
-		2CE70A861AC80A9800350D8A /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VTDecoder.m; path = "Video Call/VTDecoder.m"; sourceTree = "<group>"; };
-		2CE70A871AC80A9800350D8A /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VTEncoder.h; path = "Video Call/VTEncoder.h"; sourceTree = "<group>"; };
-		2CE70A881AC80A9800350D8A /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VTEncoder.m; path = "Video Call/VTEncoder.m"; sourceTree = "<group>"; };
+		2CD22C6D1ACAAD8100811ECB /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../../Common.h; sourceTree = "<group>"; };
+		2CD22C6E1ACAADA100811ECB /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = "../../v-Channel/Video Call/Camera.h"; sourceTree = "<group>"; };
+		2CD22C6F1ACAADA100811ECB /* Camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Camera.m; path = "../../v-Channel/Video Call/Camera.m"; sourceTree = "<group>"; };
+		2CD22C701ACAADA100811ECB /* DragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DragView.h; path = "../../v-Channel/Video Call/DragView.h"; sourceTree = "<group>"; };
+		2CD22C711ACAADA100811ECB /* DragView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DragView.m; path = "../../v-Channel/Video Call/DragView.m"; sourceTree = "<group>"; };
+		2CD22C721ACAADA100811ECB /* VideoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoController.h; path = "../../v-Channel/Video Call/VideoController.h"; sourceTree = "<group>"; };
+		2CD22C731ACAADA100811ECB /* VideoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoController.m; path = "../../v-Channel/Video Call/VideoController.m"; sourceTree = "<group>"; };
+		2CD22C741ACAADA100811ECB /* VideoLayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VideoLayerView.h; path = "../../v-Channel/Video Call/VideoLayerView.h"; sourceTree = "<group>"; };
+		2CD22C751ACAADA100811ECB /* VideoLayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VideoLayerView.m; path = "../../v-Channel/Video Call/VideoLayerView.m"; sourceTree = "<group>"; };
+		2CD22C761ACAADA100811ECB /* VTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VTDecoder.h; path = "../../v-Channel/Video Call/VTDecoder.h"; sourceTree = "<group>"; };
+		2CD22C771ACAADA100811ECB /* VTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VTDecoder.m; path = "../../v-Channel/Video Call/VTDecoder.m"; sourceTree = "<group>"; };
+		2CD22C781ACAADA100811ECB /* VTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VTEncoder.h; path = "../../v-Channel/Video Call/VTEncoder.h"; sourceTree = "<group>"; };
+		2CD22C791ACAADA100811ECB /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VTEncoder.m; path = "../../v-Channel/Video Call/VTEncoder.m"; sourceTree = "<group>"; };
 		2CE70A901AC80AEB00350D8A /* ServerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerController.h; path = Server/ServerController.h; sourceTree = "<group>"; };
 		2CE70A911AC80AEB00350D8A /* ServerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerController.m; path = Server/ServerController.m; sourceTree = "<group>"; };
-		2CE70A931AC80CA300350D8A /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Common.h; sourceTree = "<group>"; };
 		2CE70A941AC8123D00350D8A /* Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channel.h; path = Server/Channel.h; sourceTree = "<group>"; };
 		2CE70A951AC8123D00350D8A /* Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Channel.m; path = Server/Channel.m; sourceTree = "<group>"; };
 		2CE70A971AC816C600350D8A /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -107,7 +107,7 @@
 				2CE70A981AC816C600350D8A /* ViewController.m */,
 				2C17D5681AC55D9400D08849 /* AppDelegate.h */,
 				2C17D5691AC55D9400D08849 /* AppDelegate.m */,
-				2CE70A931AC80CA300350D8A /* Common.h */,
+				2CD22C6D1ACAAD8100811ECB /* Common.h */,
 			);
 			path = IOSocket;
 			sourceTree = "<group>";
@@ -135,18 +135,18 @@
 		2CE70A7C1AC80A8000350D8A /* Video Call */ = {
 			isa = PBXGroup;
 			children = (
-				2CE70A7D1AC80A9800350D8A /* Camera.h */,
-				2CE70A7E1AC80A9800350D8A /* Camera.m */,
-				2CE70A7F1AC80A9800350D8A /* DragView.h */,
-				2CE70A801AC80A9800350D8A /* DragView.m */,
-				2CE70A811AC80A9800350D8A /* VideoController.h */,
-				2CE70A821AC80A9800350D8A /* VideoController.m */,
-				2CE70A831AC80A9800350D8A /* VideoLayerView.h */,
-				2CE70A841AC80A9800350D8A /* VideoLayerView.m */,
-				2CE70A851AC80A9800350D8A /* VTDecoder.h */,
-				2CE70A861AC80A9800350D8A /* VTDecoder.m */,
-				2CE70A871AC80A9800350D8A /* VTEncoder.h */,
-				2CE70A881AC80A9800350D8A /* VTEncoder.m */,
+				2CD22C6E1ACAADA100811ECB /* Camera.h */,
+				2CD22C6F1ACAADA100811ECB /* Camera.m */,
+				2CD22C701ACAADA100811ECB /* DragView.h */,
+				2CD22C711ACAADA100811ECB /* DragView.m */,
+				2CD22C721ACAADA100811ECB /* VideoController.h */,
+				2CD22C731ACAADA100811ECB /* VideoController.m */,
+				2CD22C741ACAADA100811ECB /* VideoLayerView.h */,
+				2CD22C751ACAADA100811ECB /* VideoLayerView.m */,
+				2CD22C761ACAADA100811ECB /* VTDecoder.h */,
+				2CD22C771ACAADA100811ECB /* VTDecoder.m */,
+				2CD22C781ACAADA100811ECB /* VTEncoder.h */,
+				2CD22C791ACAADA100811ECB /* VTEncoder.m */,
 			);
 			name = "Video Call";
 			sourceTree = "<group>";
@@ -276,16 +276,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CE70A921AC80AEB00350D8A /* ServerController.m in Sources */,
-				2CE70A891AC80A9800350D8A /* Camera.m in Sources */,
 				2C17D56A1AC55D9400D08849 /* AppDelegate.m in Sources */,
 				2CE70A961AC8123D00350D8A /* Channel.m in Sources */,
+				2CD22C7B1ACAADA100811ECB /* DragView.m in Sources */,
+				2CD22C7D1ACAADA100811ECB /* VideoLayerView.m in Sources */,
 				2C17D5671AC55D9400D08849 /* main.m in Sources */,
+				2CD22C7E1ACAADA100811ECB /* VTDecoder.m in Sources */,
+				2CD22C7A1ACAADA100811ECB /* Camera.m in Sources */,
+				2CD22C7F1ACAADA100811ECB /* VTEncoder.m in Sources */,
 				2CE70A991AC816C600350D8A /* ViewController.m in Sources */,
-				2CE70A8B1AC80A9800350D8A /* VideoController.m in Sources */,
-				2CE70A8C1AC80A9800350D8A /* VideoLayerView.m in Sources */,
-				2CE70A8E1AC80A9800350D8A /* VTEncoder.m in Sources */,
-				2CE70A8D1AC80A9800350D8A /* VTDecoder.m in Sources */,
-				2CE70A8A1AC80A9800350D8A /* DragView.m in Sources */,
+				2CD22C7C1ACAADA100811ECB /* VideoController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
