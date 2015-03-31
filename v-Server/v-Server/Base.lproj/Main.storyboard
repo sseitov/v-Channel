@@ -673,19 +673,19 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cIE-bh-PdZ">
-                                <rect key="frame" x="20" y="20" width="440" height="196"/>
+                                <rect key="frame" x="20" y="20" width="440" height="230"/>
                                 <clipView key="contentView" id="D4N-jR-CKf">
                                     <rect key="frame" x="1" y="1" width="223" height="133"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <textView editable="NO" importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="ShY-sz-tto">
-                                            <rect key="frame" x="0.0" y="0.0" width="223" height="133"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="223" height="194"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <size key="minSize" width="438" height="194"/>
+                                            <size key="minSize" width="438" height="228"/>
                                             <size key="maxSize" width="463" height="10000000"/>
                                             <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                            <size key="minSize" width="438" height="194"/>
+                                            <size key="minSize" width="438" height="228"/>
                                             <size key="maxSize" width="463" height="10000000"/>
                                         </textView>
                                     </subviews>
@@ -700,28 +700,12 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0FA-72-rGh">
-                                <rect key="frame" x="377" y="222" width="82" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="g68-4f-Hau"/>
-                                    <constraint firstAttribute="width" constant="70" id="tvJ-gZ-FXF"/>
-                                </constraints>
-                                <buttonCell key="cell" type="push" title="Start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Fh1-rZ-ycc">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="start:" target="XfG-lQ-9wD" id="RR7-Hg-7gJ"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="cIE-bh-PdZ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="LCB-0x-v7G"/>
-                            <constraint firstItem="cIE-bh-PdZ" firstAttribute="top" secondItem="0FA-72-rGh" secondAttribute="bottom" constant="13" id="Lgj-9g-Lgn"/>
-                            <constraint firstAttribute="trailing" secondItem="0FA-72-rGh" secondAttribute="trailing" constant="27" id="YqP-8s-MHY"/>
-                            <constraint firstAttribute="trailing" secondItem="cIE-bh-PdZ" secondAttribute="trailing" constant="20" id="c6k-rk-srP"/>
-                            <constraint firstAttribute="bottom" secondItem="cIE-bh-PdZ" secondAttribute="bottom" constant="20" id="lcO-h4-EXM"/>
-                            <constraint firstItem="0FA-72-rGh" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="yRx-Ot-ES3"/>
+                            <constraint firstItem="cIE-bh-PdZ" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="AjQ-L4-Zdh"/>
+                            <constraint firstAttribute="bottom" secondItem="cIE-bh-PdZ" secondAttribute="bottom" constant="20" id="LWk-Tw-Ake"/>
+                            <constraint firstItem="cIE-bh-PdZ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="YjJ-GO-bzW"/>
+                            <constraint firstAttribute="trailing" secondItem="cIE-bh-PdZ" secondAttribute="trailing" constant="20" id="xuO-kl-kZ5"/>
                         </constraints>
                     </view>
                     <connections>

@@ -29,7 +29,7 @@
 @property (atomic) BOOL decoderIsOpened;
 
 @property (nonatomic) UIDeviceOrientation orientation;
-@property (nonatomic) double aspectRatio;
+//@property (nonatomic) double aspectRatio;
 @property (nonatomic) BOOL isCapture;
 
 
@@ -49,7 +49,7 @@
     
     _decoder = [[VTDecoder alloc] init];
     _decoder.delegate = self;
-    
+
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(deviceOrientationDidChange:)
@@ -69,30 +69,31 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)videoReceiveCommand:(enum Command)command withData:(NSData*)data
+- (void)receiveVideoCommand:(enum Command)command withData:(NSData*)data
 {
     switch (command) {
-        case VideoStart:
+        case Start:
             if (!_decoder.isOpened) {
                 NSDictionary* params = [NSJSONSerialization JSONObjectWithData:data
                                                                        options:kNilOptions
                                                                          error:nil];
-                if (params && [_decoder openForWidth:[params[@"width"] intValue]
-                                              height:[params[@"height"] intValue]
-                                                 sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
-                                                 pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]])
-                {
-                    [self.delegate videoSendCommand:VideoStarted withData:nil];
+                if (params) {
+                    [_decoder openForWidth:[params[@"width"] intValue]
+                                    height:[params[@"height"] intValue]
+                                       sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
+                                       pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]];
                 }
-                
             }
             break;
-        case VideoStarted:
-            self.decoderIsOpened = YES;
-            break;
-        case VideoData:
+        case Data:
             if (_decoder.isOpened) {
                 [_decoder decodeData:data];
+            }
+            break;
+        case Stop:
+            if (_decoder.isOpened) {
+                [_decoder close];
+                [_peerView clear];
             }
             break;
         case Finish:
@@ -103,16 +104,17 @@
 
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    _orientation = [[UIDevice currentDevice] orientation];
+    [self startCapture];
+}
+
 - (void)deviceOrientationDidChange:(NSNotification*)notify
 {
     [self stopCapture];
     _orientation = [[UIDevice currentDevice] orientation];
     [self startCapture];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    _orientation = [[UIDevice currentDevice] orientation];
 }
 
 - (void)startCapture
@@ -126,6 +128,8 @@
 - (void)stopCapture
 {
     if (self.isCapture) {
+        self.decoderIsOpened = NO;
+        [self.delegate sendVideoCommand:Stop withData:nil];
         [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
         [_encoder close];
         [_selfView clear];
@@ -142,7 +146,7 @@
 
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    [self.delegate videoSendCommand:Finish withData:nil];
+    [self.delegate sendVideoCommand:Finish withData:nil];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate
@@ -160,7 +164,6 @@
         } else {
             [_encoder openForWidth:sz.height height:sz.width];
         }
-        _aspectRatio = sz.width / sz.height;
     }
     if (_encoder.isOpened) {
         [_encoder encodeBuffer:pixelBuffer];
@@ -173,25 +176,16 @@
 - (void)encoder:(VTEncoder*)encoder encodedData:(NSData*)data
 {
     if (!self.decoderIsOpened) {
-        CGSize sz;
-        if (_aspectRatio <= 1.) {
-            sz.width = _peerView.frame.size.width;
-            sz.height = _peerView.frame.size.width * _aspectRatio;
-        } else {
-            sz.height = _peerView.frame.size.height;
-            sz.width = _peerView.frame.size.height / _aspectRatio;
-        }
-        
-        NSDictionary *params = @{@"width" : [NSNumber numberWithInt:sz.width],
-                                 @"height" : [NSNumber numberWithInt:sz.height],
+        NSDictionary *params = @{@"width" : [NSNumber numberWithInt:_encoder.width],
+                                 @"height" : [NSNumber numberWithInt:_encoder.height],
                                  @"sps" : [_encoder.sps base64EncodedStringWithOptions:kNilOptions],
                                  @"pps" : [_encoder.pps base64EncodedStringWithOptions:kNilOptions]};
-        [self.delegate videoSendCommand:VideoStart withData:[NSJSONSerialization dataWithJSONObject:params
+        [self.delegate sendVideoCommand:Start withData:[NSJSONSerialization dataWithJSONObject:params
                                                                                             options:kNilOptions
                                                                                               error:nil]];
-    } else {
-        [self.delegate videoSendCommand:VideoData withData:data];
+        self.decoderIsOpened = YES;
     }
+    [self.delegate sendVideoCommand:Data withData:data];
 }
 
 #pragma mark - VTDeccoder delegare

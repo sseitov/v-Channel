@@ -10,29 +10,34 @@
 #define v_Channel_Common_h
 
 #define SERVER_PORT 1964
-#define SERVER_HOST @"localhost"
+#define SERVER_HOST @"192.168.1.13"
 
 #define CONNECTION_TIMEOUT 5
 #define READ_TIMEOUT -1
 #define WRITE_TIMEOUT -1
 
-#define READ_TAG    1402
-#define WRITE_TAG    3012
+#define READ_RIGHT_TAG  1975
+#define READ_LEFT_TAG   3012
 
 enum Command {
     NoCommand,
-    InitRead,
-    InitWrite,
     Accept,
     Reject,
-    VideoStart,
-    VideoStarted,
-    VideoData,
+    Start,
+    Data,
+    Stop,
     Finish
+};
+
+enum Media {
+    Common,
+    Video,
+    Audio
 };
 
 struct Packet {
     enum Command    command;
+    enum Media      media;
     long            dataLength;
 };
 

@@ -19,7 +19,6 @@
 		2CD22C7E1ACAADA100811ECB /* VTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C771ACAADA100811ECB /* VTDecoder.m */; };
 		2CD22C7F1ACAADA100811ECB /* VTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CD22C791ACAADA100811ECB /* VTEncoder.m */; };
 		2CE70A921AC80AEB00350D8A /* ServerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A911AC80AEB00350D8A /* ServerController.m */; };
-		2CE70A961AC8123D00350D8A /* Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A951AC8123D00350D8A /* Channel.m */; };
 		2CE70A991AC816C600350D8A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2CE70A981AC816C600350D8A /* ViewController.m */; };
 		B4521551C914B0044883CD85 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC546D8252B2E2A10E651B53 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -48,8 +47,6 @@
 		2CD22C791ACAADA100811ECB /* VTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VTEncoder.m; path = "../../v-Channel/Video Call/VTEncoder.m"; sourceTree = "<group>"; };
 		2CE70A901AC80AEB00350D8A /* ServerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerController.h; path = Server/ServerController.h; sourceTree = "<group>"; };
 		2CE70A911AC80AEB00350D8A /* ServerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerController.m; path = Server/ServerController.m; sourceTree = "<group>"; };
-		2CE70A941AC8123D00350D8A /* Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channel.h; path = Server/Channel.h; sourceTree = "<group>"; };
-		2CE70A951AC8123D00350D8A /* Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Channel.m; path = Server/Channel.m; sourceTree = "<group>"; };
 		2CE70A971AC816C600350D8A /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2CE70A981AC816C600350D8A /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2FC62F67F8AEB86F30DEBC2E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -156,8 +153,6 @@
 			children = (
 				2CE70A901AC80AEB00350D8A /* ServerController.h */,
 				2CE70A911AC80AEB00350D8A /* ServerController.m */,
-				2CE70A941AC8123D00350D8A /* Channel.h */,
-				2CE70A951AC8123D00350D8A /* Channel.m */,
 			);
 			name = Server;
 			sourceTree = "<group>";
@@ -277,7 +272,6 @@
 			files = (
 				2CE70A921AC80AEB00350D8A /* ServerController.m in Sources */,
 				2C17D56A1AC55D9400D08849 /* AppDelegate.m in Sources */,
-				2CE70A961AC8123D00350D8A /* Channel.m in Sources */,
 				2CD22C7B1ACAADA100811ECB /* DragView.m in Sources */,
 				2CD22C7D1ACAADA100811ECB /* VideoLayerView.m in Sources */,
 				2C17D5671AC55D9400D08849 /* main.m in Sources */,

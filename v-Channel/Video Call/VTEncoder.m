@@ -43,6 +43,8 @@ void CompressionDataCallbackHandler(void *outputCallbackRefCon,
 //        VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_Baseline_3_0);
         VTSessionSetProperty(_session, kVTCompressionPropertyKey_ProfileLevel, kVTProfileLevel_H264_High_AutoLevel);
         _numFrames = 0;
+        _width = width;
+        _height = height;
         self.isOpened = YES;
         return YES;
     }

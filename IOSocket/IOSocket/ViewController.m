@@ -68,13 +68,13 @@
     if (sock == _readSocket) {
         [_writeSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
     } else {
-        [_readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
+        [_readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
     }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    if (tag != READ_TAG) {
+    if (tag != READ_LEFT_TAG) {
         return;
     }
     [_readData appendData:data];
@@ -87,33 +87,38 @@
                     break;
                 default:
                     if (pPacket->dataLength > 0) {
-                        NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(struct Packet)) length:pPacket->dataLength];
-                        [_client videoReceiveCommand:pPacket->command withData:params];
+                        if (pPacket->media == Video) {
+                            NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(struct Packet)) length:pPacket->dataLength];
+                            [_client receiveVideoCommand:pPacket->command withData:params];
+                        }
                     } else {
-                        [_client videoReceiveCommand:pPacket->command withData:nil];
+                        if (pPacket->media == Video) {
+                            [_client receiveVideoCommand:pPacket->command withData:nil];
+                        }
                     }
                     break;
             }
             [_readData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(struct Packet)) withBytes:NULL length:0];
         }
     }
-    [sock readDataWithTimeout:READ_TIMEOUT tag:READ_TAG];
+    [sock readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
 }
 
 #pragma mark - Video delegate
 
-- (void)videoSendCommand:(enum Command)command withData:(NSData*)data
+- (void)sendVideoCommand:(enum Command)command withData:(NSData*)data
 {
     struct Packet packet;
     packet.command = command;
+    packet.media = Video;
     packet.dataLength = data ? (uint32_t)data.length : 0;
     
     if (packet.dataLength > 0 && data) {
         NSMutableData *sendData = [NSMutableData dataWithBytes:&packet length:sizeof(packet)];
         [sendData appendData:data];
-        [_writeSocket writeData:sendData withTimeout:WRITE_TIMEOUT tag:WRITE_TAG];
+        [_writeSocket writeData:sendData withTimeout:WRITE_TIMEOUT tag:1];
     } else {
-        [_writeSocket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:WRITE_TAG];
+        [_writeSocket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:1];
     }
 }
 

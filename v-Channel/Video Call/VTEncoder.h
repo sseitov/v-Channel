@@ -20,6 +20,8 @@
 @interface VTEncoder : NSObject
 
 @property (weak, nonatomic) id<VTEncoderDelegate> delegate;
+@property (nonatomic) int width;
+@property (nonatomic) int height;
 @property (strong, nonatomic) NSData* sps;
 @property (strong, nonatomic) NSData* pps;
 @property (nonatomic) BOOL isOpened;

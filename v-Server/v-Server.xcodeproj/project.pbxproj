@@ -12,7 +12,6 @@
 		2C17D5B91AC5E24800D08849 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C17D5B81AC5E24800D08849 /* ViewController.m */; };
 		2C17D5BB1AC5E24800D08849 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2C17D5BA1AC5E24800D08849 /* Images.xcassets */; };
 		2C17D5BE1AC5E24800D08849 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2C17D5BC1AC5E24800D08849 /* Main.storyboard */; };
-		2CD1C8911AC6F3DD003274E2 /* Channel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2CD1C8901AC6F3DD003274E2 /* Channel.mm */; };
 		505CE951E1FC14214DDE8D42 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 39FD729141E4E67068CC8E51 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -27,8 +26,6 @@
 		2C17D5BA1AC5E24800D08849 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "v-Server/Images.xcassets"; sourceTree = "<group>"; };
 		2C17D5BD1AC5E24800D08849 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2CD1C88B1AC6D045003274E2 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Common.h; path = ../../Common.h; sourceTree = "<group>"; };
-		2CD1C88F1AC6F3DD003274E2 /* Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Channel.h; sourceTree = "<group>"; };
-		2CD1C8901AC6F3DD003274E2 /* Channel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Channel.mm; sourceTree = "<group>"; };
 		39FD729141E4E67068CC8E51 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA963A741CBC874B7BF3D12 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		809FBCF9B6FED12C2909FD59 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -74,8 +71,6 @@
 				2C17D5B31AC5E24800D08849 /* AppDelegate.m */,
 				2C17D5B71AC5E24800D08849 /* ViewController.h */,
 				2C17D5B81AC5E24800D08849 /* ViewController.m */,
-				2CD1C88F1AC6F3DD003274E2 /* Channel.h */,
-				2CD1C8901AC6F3DD003274E2 /* Channel.mm */,
 			);
 			path = "v-Server";
 			sourceTree = "<group>";
@@ -221,7 +216,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C17D5B91AC5E24800D08849 /* ViewController.m in Sources */,
-				2CD1C8911AC6F3DD003274E2 /* Channel.mm in Sources */,
 				2C17D5B61AC5E24800D08849 /* main.m in Sources */,
 				2C17D5B41AC5E24800D08849 /* AppDelegate.m in Sources */,
 			);

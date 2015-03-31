@@ -11,7 +11,7 @@
 
 @protocol VideoControllerDelegate <NSObject>
 
-- (void)videoSendCommand:(enum Command)command withData:(NSData*)data;
+- (void)sendVideoCommand:(enum Command)command withData:(NSData*)data;
 
 @end
 
@@ -21,6 +21,6 @@
 
 - (void)startCapture;
 - (void)shutdown;
-- (void)videoReceiveCommand:(enum Command)command withData:(NSData*)data;
+- (void)receiveVideoCommand:(enum Command)command withData:(NSData*)data;
 
 @end
