@@ -131,7 +131,7 @@ void DeompressionDataCallbackHandler(void *decompressionOutputRefCon,
                                             decodeBuffer,
                                             NULL);
     if (err != noErr) {
-//        NSLog(@"decode error: %d", (int)err);
+        NSLog(@"decode error: %d", (int)err);
     } else {
         VTDecompressionSessionWaitForAsynchronousFrames(_session);
         _numFrames++;

@@ -15,6 +15,8 @@
 #include "Common.h"
 
 @interface CallController () <VideoControllerDelegate> {
+    
+    dispatch_semaphore_t _sem;
     dispatch_queue_t _readSocketQueue;
     dispatch_queue_t _writeSocketQueue;
     dispatch_queue_t _readDelegateQueue;
@@ -48,6 +50,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _sem = dispatch_semaphore_create(0);
     
     _readSocketQueue = dispatch_queue_create("readSocketQueue", DISPATCH_QUEUE_SERIAL);
     _writeSocketQueue = dispatch_queue_create("writeSocketQueue", DISPATCH_QUEUE_SERIAL);
@@ -228,6 +232,7 @@
     } else {
         [_writeSocket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:MASTER];
     }
+    dispatch_semaphore_wait(_sem, DISPATCH_TIME_FOREVER);
 }
 
 - (void)didFinish
@@ -265,36 +270,42 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    if (tag != MASTER) {
-        return;
-    }
-    [_readData appendData:data];
-    if (_readData.length >= sizeof(struct Packet)) {
-        struct Packet *pPacket = (struct Packet *)_readData.bytes;
-        if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
-            switch (pPacket->command) {
-                case Accept:
-                    [self accept];
-                    break;
-                default:
-                    if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
-                        if (pPacket->dataLength > 0) {
-                            if (pPacket->media == Video) {
-                                NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(struct Packet)) length:pPacket->dataLength];
-                                [_video receiveVideoCommand:pPacket->command withData:params];
-                            }
-                        } else {
-                            if (pPacket->media == Video) {
-                                [_video receiveVideoCommand:pPacket->command withData:nil];
+    if (tag == MASTER) {
+        [_readData appendData:data];
+        if (_readData.length >= sizeof(struct Packet)) {
+            struct Packet *pPacket = (struct Packet *)_readData.bytes;
+            if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
+                switch (pPacket->command) {
+                    case Accept:
+                        [self accept];
+                        break;
+                    default:
+                        if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
+                            if (pPacket->dataLength > 0) {
+                                if (pPacket->media == Video) {
+                                    NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(struct Packet)) length:pPacket->dataLength];
+                                    [_video receiveVideoCommand:pPacket->command withData:params];
+                                }
+                            } else {
+                                if (pPacket->media == Video) {
+                                    [_video receiveVideoCommand:pPacket->command withData:nil];
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
+                }
+                [_readData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(struct Packet)) withBytes:NULL length:0];
             }
-            [_readData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(struct Packet)) withBytes:NULL length:0];
         }
+        [sock readDataWithTimeout:READ_TIMEOUT tag:MASTER];
     }
-    [sock readDataWithTimeout:READ_TIMEOUT tag:MASTER];
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    if (tag == MASTER) {
+        dispatch_semaphore_signal(_sem);
+    }
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
@@ -304,6 +315,7 @@
         if (!self.incommingCall) {
             [self reject];
         } else {
+            dispatch_semaphore_signal(_sem);
             [_video shutdown];
             self.incommingCall = NO;
             dispatch_async(dispatch_get_main_queue(), ^() {

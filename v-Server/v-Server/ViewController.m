@@ -56,9 +56,9 @@
 
 @implementation ViewController
 
-- (void)loadView
+- (void)viewDidLoad
 {
-    [super loadView];
+    [super viewDidLoad];
     _socketQueue = dispatch_queue_create("socketQueue", DISPATCH_QUEUE_SERIAL);
     _delegateQueue = dispatch_queue_create("delegateQueue", DISPATCH_QUEUE_SERIAL);
 
@@ -116,7 +116,7 @@
         _room = [[Room alloc] init];
         _room.master = [Channel new];
         _room.master.writeSocket = newSocket;
-        [self printLog:@"Create room"];
+        [self printLog:@"<<<<<<<< Create room"];
         [self printLog:@"Add write socket into master channel "];
     } else {
         if (_room.slave) {
@@ -160,7 +160,7 @@
         [_room.master disconnect];
         [_room.slave disconnect];
         _room = nil;
-        [self printLog:@"Close room"];
+        [self printLog:@"Close room >>>>>>>>"];
     }
 }
 
