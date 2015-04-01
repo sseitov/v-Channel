@@ -13,9 +13,59 @@
 #import "VTDecoder.h"
 #import "AppDelegate.h"
 
+#include <queue>
+#include <mutex>
+
+class DataQueue {
+    std::queue<NSData*>     _queue;
+    std::mutex				_mutex;
+    std::condition_variable _empty;
+    bool					_stopped;
+    
+public:
+    DataQueue() : _stopped(false) {}
+
+    void start()
+    {
+        _stopped = false;
+    }
+    
+    void stop()
+    {
+        std::unique_lock<std::mutex> lock(_mutex);
+        _stopped = true;
+        _empty.notify_one();
+        while (!_queue.empty()) {
+            _queue.pop();
+        }
+    }
+    
+    void push(NSData* data)
+    {
+        std::unique_lock<std::mutex> lock(_mutex);
+        _queue.push(data);
+        _empty.notify_one();
+    }
+    
+    NSData* pop()
+    {
+        std::unique_lock<std::mutex> lock(_mutex);
+        _empty.wait(lock, [this]() { return (!_queue.empty() || _stopped);});
+        if (_stopped) {
+            return nil;
+        } else {
+            NSData* data = _queue.front();
+            _queue.pop();
+            return data;
+        }
+    }
+};
+
 @interface VideoController () <AVCaptureVideoDataOutputSampleBufferDelegate, VTEncoderDelegate, VTDecoderDelegate> {
     
     dispatch_queue_t _captureQueue;
+    dispatch_queue_t _decodeQueue;
+    DataQueue _decodeStream;
 }
 
 @property (weak, nonatomic) IBOutlet DragView *selfView;
@@ -29,9 +79,6 @@
 @property (atomic) BOOL decoderIsOpened;
 
 @property (nonatomic) UIDeviceOrientation orientation;
-//@property (nonatomic) double aspectRatio;
-@property (nonatomic) BOOL isCapture;
-
 
 @end
 
@@ -42,7 +89,8 @@
     [super viewDidLoad];
     
     [[Camera shared] startup];
-    _captureQueue = dispatch_queue_create("com.vchannel.VideoCall", DISPATCH_QUEUE_SERIAL);
+    _captureQueue = dispatch_queue_create("com.vchannel.VideoCall.Capture", DISPATCH_QUEUE_SERIAL);
+    _decodeQueue = dispatch_queue_create("com.vchannel.VideoCall.Decoder", DISPATCH_QUEUE_SERIAL);
 
     _encoder = [[VTEncoder alloc] init];
     _encoder.delegate = self;
@@ -59,8 +107,7 @@
 
 - (void)shutdown
 {
-    NSLog(@"close video");
-    [self stopCapture];
+    _decodeStream.stop();
     [_decoder close];
     [[Camera shared] shutdown];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
@@ -82,16 +129,30 @@
                                     height:[params[@"height"] intValue]
                                        sps:[[NSData alloc] initWithBase64EncodedString:params[@"sps"] options:kNilOptions]
                                        pps:[[NSData alloc] initWithBase64EncodedString:params[@"pps"] options:kNilOptions]];
+                    if (_decoder.isOpened) {
+                        _decodeStream.start();
+                        dispatch_async(_decodeQueue, ^() {
+                            while (true) {
+                                NSData* data = _decodeStream.pop();
+                                if (data) {
+                                    [_decoder decodeData:data];
+                                } else {
+                                    break;
+                                }
+                            }
+                        });
+                    }
                 }
             }
             break;
         case Data:
             if (_decoder.isOpened) {
-                [_decoder decodeData:data];
+                _decodeStream.push(data);
             }
             break;
         case Stop:
             if (_decoder.isOpened) {
+                _decodeStream.stop();
                 [_decoder close];
                 [_peerView clear];
             }
@@ -117,22 +178,16 @@
 
 - (void)startCapture
 {
-    if (!self.isCapture) {
-        [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
-        self.isCapture = YES;
-    }
+    [[Camera shared].output setSampleBufferDelegate:self queue:_captureQueue];
 }
 
 - (void)stopCapture
 {
-    if (self.isCapture) {
-        self.decoderIsOpened = NO;
-        [self.delegate sendVideoCommand:Stop withData:nil];
-        [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
-        [_encoder close];
-        [_selfView clear];
-        self.isCapture = NO;
-    }
+    [self.delegate sendVideoCommand:Stop withData:nil];
+    [[Camera shared].output setSampleBufferDelegate:nil queue:_captureQueue];
+    [_encoder close];
+    [_selfView clear];
+    self.decoderIsOpened = NO;
 }
 
 - (IBAction)switchCamera:(id)sender
@@ -158,7 +213,7 @@
     CVImageBufferRef pixelBuffer = (CVImageBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
     if (!_encoder.isOpened) {
         CGSize sz = CVImageBufferGetDisplaySize(pixelBuffer);
-        if (UIInterfaceOrientationIsLandscape(_orientation)) {
+        if (UIInterfaceOrientationIsLandscape((UIInterfaceOrientation)_orientation)) {
             [_encoder openForWidth:sz.width height:sz.height];
         } else {
             [_encoder openForWidth:sz.height height:sz.width];
