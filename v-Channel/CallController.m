@@ -15,8 +15,10 @@
 #include "Common.h"
 
 @interface CallController () <VideoControllerDelegate> {
-    dispatch_queue_t _readQueue;
-    dispatch_queue_t _writeQueue;
+    dispatch_queue_t _readSocketQueue;
+    dispatch_queue_t _writeSocketQueue;
+    dispatch_queue_t _readDelegateQueue;
+    dispatch_queue_t _writeDelegateQueue;
 }
 
 @property (weak, nonatomic) IBOutlet UIImageView *photo;
@@ -33,10 +35,9 @@
 
 @property (strong, nonatomic) GCDAsyncSocket *readSocket;
 @property (strong, nonatomic) GCDAsyncSocket *writeSocket;
+@property (strong, nonatomic) NSMutableData* readData;
 
-@property (strong, nonatomic) NSMutableData* channelData;
-@property (nonatomic) BOOL isConnected;
-@property (nonatomic) enum Command acceptCommand;
+@property (atomic) BOOL isConnected;
 
 @property (strong, nonatomic) VideoController* video;
 
@@ -48,12 +49,15 @@
 {
     [super viewDidLoad];
     
-    _readQueue = dispatch_queue_create("readQueue", DISPATCH_QUEUE_SERIAL);
-    _writeQueue = dispatch_queue_create("writeQueue", DISPATCH_QUEUE_SERIAL);
-    _readSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_readQueue];
-    _writeSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_writeQueue];
+    _readSocketQueue = dispatch_queue_create("readSocketQueue", DISPATCH_QUEUE_SERIAL);
+    _writeSocketQueue = dispatch_queue_create("writeSocketQueue", DISPATCH_QUEUE_SERIAL);
+    _readDelegateQueue = dispatch_queue_create("readDelegateQueue", DISPATCH_QUEUE_SERIAL);
+    _writeDelegateQueue = dispatch_queue_create("writeDelegateQueue", DISPATCH_QUEUE_SERIAL);
     
-    _channelData = [NSMutableData new];
+    _readSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_readDelegateQueue socketQueue:_readSocketQueue];
+    _writeSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_writeDelegateQueue socketQueue:_writeSocketQueue];
+    
+    _readData = [NSMutableData new];
     
     if (_peer[@"displayName"]) {
         self.title = _peer[@"displayName"];
@@ -113,7 +117,7 @@
 
 - (void)updateGUI
 {
-    if (_incommingCall) {
+    if (self.incommingCall) {
         _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"ringtone"
                                                                                          withExtension:@"wav"] error:nil];
         _ringtone.numberOfLoops = -1;
@@ -135,48 +139,21 @@
     }
 }
 
-- (void)accept
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    dispatch_async(dispatch_get_main_queue(), ^() {
-        [_ringtone stop];
-        [self updateGUI];
-        [self performSegueWithIdentifier:@"Video" sender:self];
-    });
-}
-
-- (void)reject
-{
-    [_readSocket disconnect];
-    [_writeSocket disconnect];
-    _isConnected = NO;
-    dispatch_async(dispatch_get_main_queue(), ^() {
-        [_ringtone stop];
-        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
-                                                                                         withExtension:@"wav"] error:nil];
-        _ringtone.numberOfLoops = 0;
-        if ([_ringtone prepareToPlay]) {
-            [_ringtone play];
-        }
-        [self updateGUI];
-    });
-}
-
-- (void)finish
-{
-    [_readSocket disconnect];
-    [_writeSocket disconnect];
-    _isConnected = NO;
-    [_video shutdown];
-    dispatch_async(dispatch_get_main_queue(), ^() {
-        [self.delegate callControllerDidFinish];
-    });
+    if ([[segue identifier] isEqualToString:@"Video"]) {
+        _video = [segue destinationViewController];
+        _video.delegate = self;
+        _video.title = _peer[@"email"];
+    }
 }
 
 - (IBAction)call:(UIButton*)sender
 {
-    if (_isConnected) {
-//        [_socket disconnect];
-        _isConnected = NO;
+    if (self.isConnected) {
+        self.isConnected = NO;
+        [_readSocket disconnect];
+        [_writeSocket disconnect];
         [_ringtone stop];
         [sender setTitle:@"Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:42./255. green:128./255. blue:83./255. alpha:1.];
@@ -191,7 +168,6 @@
         [sender setTitle:@"End Call" forState:UIControlStateNormal];
         sender.backgroundColor = [UIColor colorWithRed:1. green:102./255. blue:102./255. alpha:1.];
         [_animation startAnimating];
-        _acceptCommand = NoCommand;
         [_readSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
     }
 }
@@ -200,29 +176,43 @@
 {
     [_ringtone stop];
     [_animation stopAnimating];
-    _acceptCommand = Accept;
-    _incommingCall = NO;
+    self.isConnected = YES;
     [_readSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
 }
 
 - (IBAction)rejectIncomming:(UIButton *)sender
-{/*
+{
     [_ringtone stop];
     [_animation stopAnimating];
-    _acceptCommand = Reject;
-    [_socket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
-    _incommingCall = NO;
-    [self updateGUI];*/
+    self.isConnected = NO;
+    [_readSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)accept
 {
-    if ([[segue identifier] isEqualToString:@"Video"]) {
-        _video = [segue destinationViewController];
-        _video.delegate = self;
-        _video.title = _peer[@"email"];
-    }
+    self.incommingCall = YES;
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [_ringtone stop];
+        [self performSegueWithIdentifier:@"Video" sender:self];
+    });
 }
+
+- (void)reject
+{
+    self.incommingCall = NO;
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [_ringtone stop];
+        _ringtone = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"busy"
+                                                                                         withExtension:@"wav"] error:nil];
+        _ringtone.numberOfLoops = 0;
+        if ([_ringtone prepareToPlay]) {
+            [_ringtone play];
+        }
+        [self updateGUI];
+    });
+}
+
+#pragma mark - VideoController delegate
 
 - (void)sendVideoCommand:(enum Command)command withData:(NSData*)data
 {
@@ -234,45 +224,60 @@
     if (packet.dataLength > 0 && data) {
         NSMutableData *sendData = [NSMutableData dataWithBytes:&packet length:sizeof(packet)];
         [sendData appendData:data];
-        [_writeSocket writeData:sendData withTimeout:WRITE_TIMEOUT tag:1];
+        [_writeSocket writeData:sendData withTimeout:WRITE_TIMEOUT tag:MASTER];
     } else {
-        [_writeSocket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:1];
+        [_writeSocket writeData:[NSData dataWithBytes:&packet length:sizeof(packet)] withTimeout:WRITE_TIMEOUT tag:MASTER];
     }
+}
+
+- (void)didFinish
+{
+    self.isConnected = NO;
+    self.incommingCall = NO;
+    [_writeSocket disconnect];
+    [self.delegate callControllerDidFinish];
 }
 
 #pragma mark - Socket delegate
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    _isConnected = YES;
     if (sock == _readSocket) {
-        [_writeSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
+        if (self.incommingCall) {
+            if (self.isConnected) {
+                [_writeSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
+            } else {
+                self.incommingCall = NO;
+                [_readSocket disconnect];
+                dispatch_async(dispatch_get_main_queue(), ^() {
+                    [self updateGUI];
+                });
+            }
+        } else {
+            [_writeSocket connectToHost:SERVER_HOST onPort:SERVER_PORT withTimeout:CONNECTION_TIMEOUT error:nil];
+        }
     } else {
-        [_readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
+        [_readSocket readDataWithTimeout:READ_TIMEOUT tag:MASTER];
+        self.isConnected = YES;
+        self.incommingCall = NO;
     }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    if (tag != READ_LEFT_TAG) {
+    if (tag != MASTER) {
         return;
     }
-    [_channelData appendData:data];
-    if (_channelData.length >= sizeof(struct Packet)) {
-        struct Packet *pPacket = (struct Packet *)_channelData.bytes;
-        if (_channelData.length >= pPacket->dataLength + sizeof(struct Packet)) {
+    [_readData appendData:data];
+    if (_readData.length >= sizeof(struct Packet)) {
+        struct Packet *pPacket = (struct Packet *)_readData.bytes;
+        if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
             switch (pPacket->command) {
                 case Accept:
                     [self accept];
                     break;
-                case Reject:
-                    [self reject];
-                    break;
-                case Finish:
-                    [self finish];
-                    break;
                 default:
-                    if (_channelData.length >= pPacket->dataLength + sizeof(struct Packet)) {
+                    if (_readData.length >= pPacket->dataLength + sizeof(struct Packet)) {
                         if (pPacket->dataLength > 0) {
                             if (pPacket->media == Video) {
                                 NSData* params = [NSData dataWithBytes:((uint8_t*)data.bytes+sizeof(struct Packet)) length:pPacket->dataLength];
@@ -286,15 +291,26 @@
                     }
                     break;
             }
-            [_channelData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(struct Packet)) withBytes:NULL length:0];
+            [_readData replaceBytesInRange:NSMakeRange(0, pPacket->dataLength + sizeof(struct Packet)) withBytes:NULL length:0];
         }
     }
-    [sock readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
+    [sock readDataWithTimeout:READ_TIMEOUT tag:MASTER];
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    [self finish];
+    if (self.isConnected) {
+        self.isConnected = NO;
+        if (!self.incommingCall) {
+            [self reject];
+        } else {
+            [_video shutdown];
+            self.incommingCall = NO;
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                [self.delegate callControllerDidFinish];
+            });
+        }
+    }
 }
 
 @end

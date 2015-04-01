@@ -15,16 +15,24 @@
 @property (strong, nonatomic) GCDAsyncSocket *readSocket;
 @property (strong, nonatomic) GCDAsyncSocket *writeSocket;
 
+- (void)disconnect;
+
 @end
 
 @implementation Channel
+
+- (void)disconnect
+{
+    [_readSocket disconnect];
+    [_writeSocket disconnect];
+}
 
 @end
 
 @interface Room : NSObject
 
-@property (strong, nonatomic) Channel *rightChannel;
-@property (strong, nonatomic) Channel *leftChannel;
+@property (strong, nonatomic) Channel *master;
+@property (strong, nonatomic) Channel *slave;
 
 @end
 
@@ -38,6 +46,7 @@
 }
 
 @property (unsafe_unretained) IBOutlet NSTextView *log;
+- (IBAction)clearLog:(id)sender;
 
 @property (strong, nonatomic) GCDAsyncSocket *serverSocket;
 @property (nonatomic) BOOL isRunning;
@@ -68,6 +77,11 @@
 
 }
 
+- (IBAction)clearLog:(id)sender
+{
+    [_log setString:@""];
+}
+
 - (void)printLog:(NSString*)text
 {
     dispatch_async(dispatch_get_main_queue(), ^() {
@@ -89,47 +103,64 @@
     [self printLog:@"Send Accept command"];
     struct Packet acceptPacket = {Accept, 0};
     
-    [_room.rightChannel.writeSocket writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(struct Packet)] withTimeout:WRITE_TIMEOUT tag:0];
-    [_room.rightChannel.readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_RIGHT_TAG];
+    [_room.master.writeSocket writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(struct Packet)] withTimeout:WRITE_TIMEOUT tag:0];
+    [_room.master.readSocket readDataWithTimeout:READ_TIMEOUT tag:MASTER];
     
-    [_room.leftChannel.writeSocket writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(struct Packet)] withTimeout:WRITE_TIMEOUT tag:0];
-    [_room.leftChannel.readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
+    [_room.slave.writeSocket writeData:[NSData dataWithBytes:&acceptPacket length:sizeof(struct Packet)] withTimeout:WRITE_TIMEOUT tag:0];
+    [_room.slave.readSocket readDataWithTimeout:READ_TIMEOUT tag:SLAVE];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
     if (!_room) {
         _room = [[Room alloc] init];
-        _room.rightChannel = [Channel new];
-        _room.rightChannel.writeSocket = newSocket;
+        _room.master = [Channel new];
+        _room.master.writeSocket = newSocket;
         [self printLog:@"Create room"];
-        [self printLog:@"Add right channel write socket"];
+        [self printLog:@"Add write socket into master channel "];
     } else {
-        if (_room.leftChannel) {
-            if (_room.leftChannel.writeSocket) {
-                _room.leftChannel.readSocket = newSocket;
-                [self printLog:@"Add left channel read socket"];
+        if (_room.slave) {
+            if (_room.slave.writeSocket) {
+                _room.slave.readSocket = newSocket;
+                [self printLog:@"Add read socket into slave channel"];
                 [self sendAccept];
             } else {
-                _room.leftChannel.writeSocket = newSocket;
-                [self printLog:@"Add left channel write socket"];
+                _room.slave.writeSocket = newSocket;
+                [self printLog:@"Add slave channel write socket"];
             }
         } else {
-            _room.rightChannel.readSocket = newSocket;
-            [self printLog:@"Add right channel read socket"];
-            _room.leftChannel = [Channel new];
+            _room.master.readSocket = newSocket;
+            [self printLog:@"Add read socket into master channel. Create slave channel and wait response."];
+            _room.slave = [Channel new];
         }
     }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    if (tag == READ_RIGHT_TAG) {
-        [_room.leftChannel.writeSocket writeData:data withTimeout:WRITE_TIMEOUT tag:100];
-        [_room.rightChannel.readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_RIGHT_TAG];
-    } else if (tag == READ_LEFT_TAG) {
-        [_room.rightChannel.writeSocket writeData:data withTimeout:WRITE_TIMEOUT tag:200];
-        [_room.leftChannel.readSocket readDataWithTimeout:READ_TIMEOUT tag:READ_LEFT_TAG];
+    if (tag == MASTER) {
+        [_room.slave.writeSocket writeData:data withTimeout:WRITE_TIMEOUT tag:MASTER];
+    } else if (tag == SLAVE) {
+        [_room.master.writeSocket writeData:data withTimeout:WRITE_TIMEOUT tag:SLAVE];
+    }
+}
+
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+{
+    if (tag == MASTER) {
+        [_room.master.readSocket readDataWithTimeout:READ_TIMEOUT tag:MASTER];
+    } else if (tag == SLAVE) {
+        [_room.slave.readSocket readDataWithTimeout:READ_TIMEOUT tag:SLAVE];
+    }
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
+    if (_room) {
+        [_room.master disconnect];
+        [_room.slave disconnect];
+        _room = nil;
+        [self printLog:@"Close room"];
     }
 }
 

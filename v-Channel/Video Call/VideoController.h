@@ -12,6 +12,7 @@
 @protocol VideoControllerDelegate <NSObject>
 
 - (void)sendVideoCommand:(enum Command)command withData:(NSData*)data;
+- (void)didFinish;
 
 @end
 
@@ -19,8 +20,7 @@
 
 @property (weak, nonatomic) id<VideoControllerDelegate> delegate;
 
-- (void)startCapture;
-- (void)shutdown;
 - (void)receiveVideoCommand:(enum Command)command withData:(NSData*)data;
+- (void)shutdown;
 
 @end

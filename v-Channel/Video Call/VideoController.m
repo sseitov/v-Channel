@@ -96,8 +96,6 @@
                 [_peerView clear];
             }
             break;
-        case Finish:
-            break;
         default:
             break;
     }
@@ -146,7 +144,8 @@
 
 - (IBAction)endCall:(UIBarButtonItem*)sender
 {
-    [self.delegate sendVideoCommand:Finish withData:nil];
+    [self shutdown];
+    [self.delegate didFinish];
 }
 
 #pragma mark - AVCaptureVideoDataOutput delegate

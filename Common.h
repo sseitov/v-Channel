@@ -10,27 +10,23 @@
 #define v_Channel_Common_h
 
 #define SERVER_PORT 1964
-#define SERVER_HOST @"192.168.1.13"
+#define SERVER_HOST @"95.31.31.166"
 
 #define CONNECTION_TIMEOUT 5
 #define READ_TIMEOUT -1
 #define WRITE_TIMEOUT -1
 
-#define READ_RIGHT_TAG  1975
-#define READ_LEFT_TAG   3012
+#define MASTER  1975
+#define SLAVE   3012
 
 enum Command {
-    NoCommand,
     Accept,
-    Reject,
     Start,
     Data,
-    Stop,
-    Finish
+    Stop
 };
 
 enum Media {
-    Common,
     Video,
     Audio
 };

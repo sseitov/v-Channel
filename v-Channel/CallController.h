@@ -19,6 +19,7 @@
 
 @property (weak, nonatomic) id<CallControllerDelegate> delegate;
 @property (strong, nonatomic) PFUser *peer;
-@property (nonatomic) BOOL incommingCall;
+
+@property (atomic) BOOL incommingCall;
 
 @end
