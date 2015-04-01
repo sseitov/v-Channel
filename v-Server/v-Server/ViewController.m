@@ -56,9 +56,9 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
+    [super loadView];
     _socketQueue = dispatch_queue_create("socketQueue", DISPATCH_QUEUE_SERIAL);
     _delegateQueue = dispatch_queue_create("delegateQueue", DISPATCH_QUEUE_SERIAL);
 
