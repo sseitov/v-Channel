@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
+#include "ApiKeys.h"
 
 NSString* const PushCommandNotification = @"PushCommandNotification";
 
@@ -30,8 +31,7 @@ NSString* const PushCommandNotification = @"PushCommandNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Parse setApplicationId:@"OEMz45lHZDfdEN9SMWjCPF3AQ49QSzWVikdtazFK"
-                  clientKey:@"uw7xs5HqWHmVJMMyCj1Ub8PKCfi486CwOH2nzy5z"];
+    [Parse setApplicationId:vChannelParseApplicationId clientKey:vChannelParseClientKey];
     [PFFacebookUtils initializeFacebook];
     
     // Register for Push Notitications
